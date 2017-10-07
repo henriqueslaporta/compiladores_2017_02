@@ -49,10 +49,35 @@ dec : vardec
 	| fundec
 	;
 
-vardec : KW_BYTE TK_IDENTIFIER
+vardec : TK_IDENTIFIER ':' tipevardec '=' literal ';'
+	| TK_IDENTIFIER ':' tipevardec'['LIT_INTEGER']' vectorinit ';'
+	;
+	
+vectorinit: LIT_INTEGER vectorinit
+	| LIT_REAL vectorinit
+	| LIT_CHAR vectorinit
+	| 
 	;
 
-fundec : KW_BYTE TK_IDENTIFIER '(' ')' cmd
+tipevardec: KW_BYTE
+	| KW_SHORT
+	| KW_LONG
+	| KW_FLOAT
+	| KW_DOUBLE
+	;
+
+literal: LIT_INTEGER
+	| LIT_REAL
+	| LIT_CHAR
+	| LIT_STRING
+	;
+
+fundec : '('tipevardec')' TK_IDENTIFIER '(' funargl ')' cmd
+	;
+
+funargl: TK_IDENTIFIER ':' tipevardec ',' funargl
+	| TK_IDENTIFIER ':' tipevardec funargl
+	|
 	;
 
 cmd : TK_IDENTIFIER '=' exp
