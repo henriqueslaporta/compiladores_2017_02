@@ -1,0 +1,15 @@
+1
+test
+byte;
+byte	 b;
+vc
+%
+@
+long _var 1
+for(v = 0;v <= 10; v++){
+	return 0;
+}
+'c'
+c
+"string1""string2"
+
