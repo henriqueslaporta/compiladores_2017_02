@@ -72,7 +72,7 @@ literal: LIT_INTEGER
 	| LIT_STRING
 	;
 
-fundec : '('tipevardec')' TK_IDENTIFIER '(' funargl ')' cmd
+fundec : '('tipevardec')' TK_IDENTIFIER '(' funargl ')' block
 	;
 
 funargl: TK_IDENTIFIER ':' tipevardec ',' funargl
@@ -80,20 +80,26 @@ funargl: TK_IDENTIFIER ':' tipevardec ',' funargl
 	|
 	;
 
-cmd : TK_IDENTIFIER '=' exp
-	| block
-	;
-
-exp : 
-	;
-
 block : '{' lcmd '}'
 	;
 
-lcmd : cmd lcmd
+lcmd: cmd ';' lcmd
+	| cmd
 	|
 	;
 
+lcmd : TK_IDENTIFIER '=' exp
+	| TK_IDENTIFIER'['exp']' '=' exp
+	| KW_READ '>' TK_IDENTIFIER 
+	| KW_RETURN exp
+	| KW_PRINT eprint
+	|
+	;
+
+eprint: 
+
+exp : 
+	;
 
 
 %%
