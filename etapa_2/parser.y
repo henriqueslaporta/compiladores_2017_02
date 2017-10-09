@@ -88,17 +88,54 @@ lcmd: cmd ';' lcmd
 	|
 	;
 
-lcmd : TK_IDENTIFIER '=' exp
+cmd : TK_IDENTIFIER '=' exp
 	| TK_IDENTIFIER'['exp']' '=' exp
 	| KW_READ '>' TK_IDENTIFIER 
 	| KW_RETURN exp
 	| KW_PRINT eprint
+	| cmdif
+	| cmdwhile
+	;
+
+eprint: argprint restprint
+	;
+
+restprint: ',' argprint restprint
 	|
 	;
 
-eprint: 
+argprint: exp
+	| LIT_STRING
+	;
 
-exp : 
+exp : exp ops exp
+	| TK_IDENTIFIER '('funargl')'
+	| TK_IDENTIFIER '['exp']'
+	| LIT_INTEGER
+	| TK_IDENTIFIER
+	| '('exp')'
+	;
+
+ops: '+'
+	| '-'
+	| '*'
+	| '/'
+	| '<'
+	| '>'
+	| '!'
+	| OPERATOR_LE
+	| OPERATOR_GE
+	| OPERATOR_EQ
+	| OPERATOR_NE
+	| OPERATOR_AND
+	| OPERATOR_OR
+	;
+
+cmdif: KW_IF '('exp')' KW_THEN block
+	| KW_IF '('exp')' KW_THEN block KW_ELSE block
+	;
+
+cmdwhile: KW_WHILE '('exp')' block
 	;
 
 
