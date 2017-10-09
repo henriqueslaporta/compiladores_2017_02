@@ -113,7 +113,18 @@ argprint: exp
 	| LIT_STRING
 	;
 
-exp : exp ops exp
+exp :  exp '+' exp
+	| exp '-' exp
+	| exp '/' exp
+	| exp '<' exp
+	| exp '>' exp
+	| exp '!' exp
+	| exp OPERATOR_LE exp
+	| exp OPERATOR_GE exp
+	| exp OPERATOR_EQ exp
+	| exp OPERATOR_NE exp
+	| exp OPERATOR_AND exp
+	| exp OPERATOR_OR exp
 	| TK_IDENTIFIER '('funparaml')'
 	| TK_IDENTIFIER '['exp']'
 	| LIT_INTEGER
@@ -133,20 +144,7 @@ funparam:  TK_IDENTIFIER
 	| LIT_STRING
 	;
 
-ops: '+'
-	| '-'
-	| '*'
-	| '/'
-	| '<'
-	| '>'
-	| '!'
-	| OPERATOR_LE
-	| OPERATOR_GE
-	| OPERATOR_EQ
-	| OPERATOR_NE
-	| OPERATOR_AND
-	| OPERATOR_OR
-	;
+
 
 cmdif: KW_IF '('exp')' KW_THEN block
 	| KW_IF '('exp')' KW_THEN cmd
@@ -159,6 +157,8 @@ cmdwhile: KW_WHILE '('exp')' block
 
 
 %%
+
+
 
 int yyerrror(char *msg){
 	fprintf(stderr,"Eita, erro1!!@\n");
