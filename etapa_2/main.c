@@ -4,6 +4,8 @@
 #include "y.tab.h"
 
 extern FILE *yyin;
+extern int getLineNumber();
+extern void hashPrint();
 
 int main (int argc, char **argv)
 {

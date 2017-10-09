@@ -21,7 +21,6 @@ int yyerror(char *msg);
 %token KW_RETURN 267
 %token KW_PRINT 268
 
-
 %token OPERATOR_LE 270
 %token OPERATOR_GE 271
 %token OPERATOR_EQ 272
@@ -37,6 +36,10 @@ int yyerror(char *msg);
 
 %token TOKEN_ERROR 290
 
+%left '+' '-'
+%left '*' '/' 
+%left OPERATOR_AND OPERATOR_OR '!'
+%left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE
 
 %%
 program : decl
@@ -156,8 +159,6 @@ cmdwhile: KW_WHILE '('exp')' block
 
 
 %%
-
-
 
 int yyerrror(char *msg){
 	fprintf(stderr,"Eita, erro1!!@\n");
