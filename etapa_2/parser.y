@@ -85,8 +85,9 @@ block : '{' lcmd '}'
 
 lcmd: cmd ';' lcmd
 	| cmd
-	|
-	;
+	| block ';' lcmd
+	| block
+	; 
 
 cmd : TK_IDENTIFIER '=' exp
 	| TK_IDENTIFIER'['exp']' '=' exp
@@ -95,6 +96,7 @@ cmd : TK_IDENTIFIER '=' exp
 	| KW_PRINT eprint
 	| cmdif
 	| cmdwhile
+	|
 	;
 
 eprint: argprint restprint
@@ -109,11 +111,23 @@ argprint: exp
 	;
 
 exp : exp ops exp
-	| TK_IDENTIFIER '('funargl')'
+	| TK_IDENTIFIER '('funparaml')'
 	| TK_IDENTIFIER '['exp']'
 	| LIT_INTEGER
 	| TK_IDENTIFIER
 	| '('exp')'
+	;
+
+funparaml: funparam  ',' funparaml
+	| funparam
+	|
+	;
+	
+funparam:  TK_IDENTIFIER
+	| LIT_INTEGER
+	| LIT_REAL
+	| LIT_CHAR
+	| LIT_STRING
 	;
 
 ops: '+'
@@ -132,7 +146,9 @@ ops: '+'
 	;
 
 cmdif: KW_IF '('exp')' KW_THEN block
+	| KW_IF '('exp')' KW_THEN cmd
 	| KW_IF '('exp')' KW_THEN block KW_ELSE block
+	| KW_IF '('exp')' KW_THEN block KW_ELSE cmd
 	;
 
 cmdwhile: KW_WHILE '('exp')' block
