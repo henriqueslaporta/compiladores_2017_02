@@ -5,7 +5,7 @@ y.tab.o: y.tab.c
 	gcc -c y.tab.c
 
 y.tab.c: parser.y
-	yacc -d parser.y
+	yacc -d -r solved parser.y
 
 lex.yy.o: lex.yy.c
 	gcc lex.yy.c -c
@@ -20,4 +20,4 @@ lex.yy.c: scanner.l
 	lex scanner.l
 
 clean:
-	rm etapa2 lex.yy.c *.o y.tab.c y.tab.h
+	rm etapa2 lex.yy.c *.o y.tab.c y.tab.h y.output
