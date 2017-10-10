@@ -8,7 +8,6 @@ int yylex();
 int yyerror(char *msg);
 
 
-
 %}
 
 %union { HASH_NODE *symbol; }
@@ -42,16 +41,16 @@ int yyerror(char *msg);
 
 %token TOKEN_ERROR 290
 
-%left '+' '-'
-%left '*' '/' 
 %left OPERATOR_AND OPERATOR_OR '!'
 %left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE
+%left '+' '-'
+%left '*' '/' 
 
 %%
 program : decl
 
 decl : dec decl
-	|	
+	| {fprintf(stderr,"Programa pertence a linguagem.\n");exit(0);}	
 	;
 
 dec : vardec
@@ -121,6 +120,7 @@ argprint: exp
 
 exp :  exp '+' exp
 	| exp '-' exp
+	| exp '*' exp
 	| exp '/' exp
 	| exp '<' exp
 	| exp '>' exp
@@ -168,7 +168,7 @@ cmdwhile: KW_WHILE '('exp')' block
 
 
 
-int yyerrror(char *msg){
-	fprintf(stderr,"Eita, erro1!!@\n");
+int yyerror(char *msg){
+	fprintf(stderr,"Linha %d: %s\n",getLineNumber(), msg);
 	exit(3);
 }
