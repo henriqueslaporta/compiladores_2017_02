@@ -2,7 +2,7 @@
 	#include "hash.h"
 	#include "y.tab.h"
 
-	int lineNumber = 0;
+	int lineNumber = 1;
 	int running = 1;
 
 %}

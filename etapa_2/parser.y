@@ -48,7 +48,7 @@ int yyerror(char *msg);
 program : decl
 
 decl : dec decl
-	| {fprintf(stderr,"Programa pertence a linguagem.\n");exit(0);}	
+	| 	
 	;
 
 dec : vardec

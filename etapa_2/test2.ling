@@ -10,7 +10,7 @@ f: float = 10.55;
 c: byte = 'x';
 d: byte = 65;
 
-(short) voidfunc() {;;;;;;;;;};
+(short) voidfunc() {;;;;;;;;;}
 
 (byte) voidfunc() {
 	if (a==11) then
@@ -31,6 +31,7 @@ d: byte = 65;
     b=1;
 }
 
+=============
 (long) voidfunc() {}
 
 (float) voidfunc() {}
