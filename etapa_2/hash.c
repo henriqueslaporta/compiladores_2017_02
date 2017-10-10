@@ -21,7 +21,7 @@ void hashPrint()
 	{
 	   for (n=table[i]; n; n=n->next)
 	   {
-	       printf ("Table[%d] has %s \t\tlen: %d\n",i,n->text, strlen(n->text));
+	       printf ("Table[%d] has %s \t\tlen: %lu\n",i,n->text, strlen(n->text));
 	   }
 	}
 }

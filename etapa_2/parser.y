@@ -1,18 +1,17 @@
 %{
+#include "hash.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+
 int yylex();
 int yyerror(char *msg);
 
-#define	SYMBOL_LIT_INT					1
-#define	SYMBOL_LIT_REAL				2
-#define	SYMBOL_LIT_CHAR				3
-#define	SYMBOL_LIT_STRING			4
-#define	SYMBOL_LIT_IDENTIFIER		5
+
 
 %}
 
-%union { HASH_NODE *symbol; };
+%union { HASH_NODE *symbol; }
 
 %token KW_BYTE 256
 %token KW_SHORT 257
@@ -35,11 +34,11 @@ int yyerror(char *msg);
 %token OPERATOR_AND 274
 %token OPERATOR_OR 275
 
-%token<symbol> TK_IDENTIFIER 280
-%token<symbol> LIT_INTEGER 281
-%token<symbol> LIT_REAL 282
-%token<symbol> LIT_CHAR 285
-%token<symbol> LIT_STRING 286
+%token<symbol> SYMBOL_IDENTIFIER	
+%token<symbol> SYMBOL_LIT_INT		
+%token<symbol> SYMBOL_LIT_REAL		
+%token<symbol> SYMBOL_LIT_CHAR		
+%token<symbol> SYMBOL_LIT_STRING	
 
 %token TOKEN_ERROR 290
 
@@ -59,13 +58,13 @@ dec : vardec
 	| fundec
 	;
 
-vardec : TK_IDENTIFIER ':' tipevardec '=' literal ';'
-	| TK_IDENTIFIER ':' tipevardec'['LIT_INTEGER']' vectorinit ';'
+vardec : SYMBOL_IDENTIFIER ':' tipevardec '=' literal ';'
+	| SYMBOL_IDENTIFIER ':' tipevardec'['SYMBOL_LIT_INT']' vectorinit ';'
 	;
 	
-vectorinit: LIT_INTEGER vectorinit
-	| LIT_REAL vectorinit
-	| LIT_CHAR vectorinit
+vectorinit: SYMBOL_LIT_INT vectorinit
+	| SYMBOL_LIT_REAL vectorinit
+	| SYMBOL_LIT_CHAR vectorinit
 	| 
 	;
 
@@ -76,17 +75,17 @@ tipevardec: KW_BYTE
 	| KW_DOUBLE
 	;
 
-literal: LIT_INTEGER
-	| LIT_REAL
-	| LIT_CHAR
-	| LIT_STRING
+literal: SYMBOL_LIT_INT
+	| SYMBOL_LIT_REAL
+	| SYMBOL_LIT_CHAR
+	| SYMBOL_LIT_STRING
 	;
 
-fundec : '('tipevardec')' TK_IDENTIFIER '(' funargl ')' block
+fundec : '('tipevardec')' SYMBOL_IDENTIFIER '(' funargl ')' block
 	;
 
-funargl: TK_IDENTIFIER ':' tipevardec ',' funargl
-	| TK_IDENTIFIER ':' tipevardec funargl
+funargl: SYMBOL_IDENTIFIER ':' tipevardec ',' funargl
+	| SYMBOL_IDENTIFIER ':' tipevardec funargl
 	|
 	;
 
@@ -99,9 +98,9 @@ lcmd: cmd ';' lcmd
 	| block
 	; 
 
-cmd : TK_IDENTIFIER '=' exp
-	| TK_IDENTIFIER'['exp']' '=' exp
-	| KW_READ '>' TK_IDENTIFIER 
+cmd : SYMBOL_IDENTIFIER '=' exp
+	| SYMBOL_IDENTIFIER'['exp']' '=' exp
+	| KW_READ '>' SYMBOL_IDENTIFIER 
 	| KW_RETURN exp
 	| KW_PRINT eprint
 	| cmdif
@@ -117,7 +116,7 @@ restprint: ',' argprint restprint
 	;
 
 argprint: exp
-	| LIT_STRING
+	| SYMBOL_LIT_STRING
 	;
 
 exp :  exp '+' exp
@@ -132,12 +131,12 @@ exp :  exp '+' exp
 	| exp OPERATOR_NE exp
 	| exp OPERATOR_AND exp
 	| exp OPERATOR_OR exp
-	| TK_IDENTIFIER '('funparaml')'
-	| TK_IDENTIFIER '['exp']'
-	| LIT_INTEGER
-	| LIT_REAL
-	| LIT_CHAR
-	| TK_IDENTIFIER
+	| SYMBOL_IDENTIFIER '('funparaml')'
+	| SYMBOL_IDENTIFIER '['exp']'
+	| SYMBOL_LIT_INT
+	| SYMBOL_LIT_REAL
+	| SYMBOL_LIT_CHAR
+	| SYMBOL_IDENTIFIER
 	| '('exp')'
 	;
   
@@ -146,11 +145,11 @@ funparaml: funparam  ',' funparaml
 	|
 	;
 	
-funparam:  TK_IDENTIFIER
-	| LIT_INTEGER
-	| LIT_REAL
-	| LIT_CHAR
-	| LIT_STRING
+funparam:  SYMBOL_IDENTIFIER
+	| SYMBOL_LIT_INT
+	| SYMBOL_LIT_REAL
+	| SYMBOL_LIT_CHAR
+	| SYMBOL_LIT_STRING
 	;
 
 

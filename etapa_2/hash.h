@@ -1,4 +1,4 @@
-#define SYMBOL_IDENTIFIER 1
+
 #define SYMBOL_LST_INT 2
 #define HASH_SIZE 997
 

@@ -1,6 +1,6 @@
 %{
-	#include "y.tab.h"
 	#include "hash.h"
+	#include "y.tab.h"
 
 	int lineNumber = 0;
 	int running = 1;
@@ -32,11 +32,11 @@
 "&&"		{ return OPERATOR_AND;}
 "\|\|"		{ return OPERATOR_OR;}
 
-[a-zA-Z_]([a-zA-Z_0-9 ]*[a-zA-Z_0-9])?		{ yylval.symbol = hashInsert(yytext,TK_IDENTIFIER); return TK_IDENTIFIER;}
-[0-9]+							{ yylval.symbol = hashInsert(yytext,LIT_INTEGER); return LIT_INTEGER;}
-[0-9]+("."[0-9]+)				{ yylval.symbol = hashInsert(yytext,LIT_REAL); return LIT_REAL;}
-"'"[a-zA-Z0-9]"'"				{ yylval.symbol = hashInsert(yytext,LIT_CHAR); return LIT_CHAR;}
-\"[^\"\n]*\"					{ yylval.symbol = hashInsert(yytext,LIT_STRING); return LIT_STRING;}
+[a-zA-Z_]([a-zA-Z_0-9 ]*[a-zA-Z_0-9])?		{ yylval.symbol = hashInsert(yytext,SYMBOL_IDENTIFIER); return SYMBOL_IDENTIFIER;}
+[0-9]+							{ yylval.symbol = hashInsert(yytext,SYMBOL_LIT_INT); return SYMBOL_LIT_INT;}
+[0-9]+("."[0-9]+)				{ yylval.symbol = hashInsert(yytext,SYMBOL_LIT_REAL); return SYMBOL_LIT_REAL;}
+"'"[a-zA-Z0-9]"'"				{ yylval.symbol = hashInsert(yytext,SYMBOL_LIT_CHAR); return SYMBOL_LIT_CHAR;}
+\"[^\"\n]*\"					{ yylval.symbol = hashInsert(yytext,SYMBOL_LIT_STRING); return SYMBOL_LIT_STRING;}
 [-,;:(){}+/<>=!&$#]				{ return yytext[0]; }
 "["								{ return yytext[0]; }
 "]"								{ return yytext[0]; }
