@@ -1,14 +1,38 @@
-(long) incn (x: long, n: long)
-  {
-  if (a==11) then
+a: short = 0;
+i: long = 0;
+v1: byte[10] 'q' 0 0 0 0 0 0 0 0 0; 
+v1: short[10] 0 0 0 0 0 0 0 0 0 0; 
+v1: long[10] 0 0 0 0 0 0 0 0 0 0; 
+v1: float[10] 0 0 0 0 0 0 0 0 0 0; 
+v1: double[10] 0 0 0 0 0 0 0 0 0 0; 
+mat: long[10]; 
+f: float = 10.55;
+c: byte = 'x';
+d: byte = 65;
+
+(short) voidfunc() {;;;;;;;;;}
+
+(byte) voidfunc() {
+	if (a==11) then
     ;
- if (a==11) then {} else
+      if (a>11) then
     ;
-  
-  ;;;
-  {;};{{{}}}
-  }
-  
-  (long) incn ()
-  {}
-  
+      if (a<11) then
+    ;
+      if (a>=11) then
+    ;
+      if (a<=11) then
+    ;
+     if (a()) then
+    ;
+    if (a<=(a(11))) then {a=0} else {
+    a=0;};
+
+    b=1;
+}
+
+(long) voidfunc() {}
+
+(float) voidfunc() {}
+
+(double) voidfunc() {}

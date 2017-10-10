@@ -4,8 +4,15 @@
 int yylex();
 int yyerror(char *msg);
 
+#define	SYMBOL_LIT_INT					1
+#define	SYMBOL_LIT_REAL				2
+#define	SYMBOL_LIT_CHAR				3
+#define	SYMBOL_LIT_STRING			4
+#define	SYMBOL_LIT_IDENTIFIER		5
+
 %}
 
+%union { HASH_NODE *symbol; };
 
 %token KW_BYTE 256
 %token KW_SHORT 257
@@ -28,11 +35,11 @@ int yyerror(char *msg);
 %token OPERATOR_AND 274
 %token OPERATOR_OR 275
 
-%token TK_IDENTIFIER 280
-%token LIT_INTEGER 281
-%token LIT_REAL 282
-%token LIT_CHAR 285
-%token LIT_STRING 286
+%token<symbol> TK_IDENTIFIER 280
+%token<symbol> LIT_INTEGER 281
+%token<symbol> LIT_REAL 282
+%token<symbol> LIT_CHAR 285
+%token<symbol> LIT_STRING 286
 
 %token TOKEN_ERROR 290
 
@@ -128,6 +135,8 @@ exp :  exp '+' exp
 	| TK_IDENTIFIER '('funparaml')'
 	| TK_IDENTIFIER '['exp']'
 	| LIT_INTEGER
+	| LIT_REAL
+	| LIT_CHAR
 	| TK_IDENTIFIER
 	| '('exp')'
 	;
