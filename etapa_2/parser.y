@@ -6,8 +6,6 @@
 
 int yylex();
 int yyerror(char *msg);
-
-
 %}
 
 %union { HASH_NODE *symbol; }
@@ -166,9 +164,7 @@ cmdwhile: KW_WHILE '('exp')' block
 
 %%
 
-
-
 int yyerror(char *msg){
-	fprintf(stderr,"Linha %d: %s\n",getLineNumber(), msg);
+	fprintf(stderr,"[ERRO] Linha %d: %s\n",getLineNumber(), msg);
 	exit(3);
 }
