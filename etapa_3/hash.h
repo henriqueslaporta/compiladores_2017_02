@@ -1,3 +1,5 @@
+#ifndef HASH_HEADER
+#define HASH_HEADER
 
 #define SYMBOL_LST_INT 2
 #define HASH_SIZE 997
@@ -22,3 +24,5 @@ void initMe();
 int getLineNumber();
 int isRunning();
 
+
+#endif

@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifndef ASTREE_HEADER
+#define ASTREE_HEADER
+
 #include "hash.h"
 
 #define MAX_SONS 4
@@ -22,3 +25,5 @@ AST* astCreate(int type, HASH_NODE *symbol, AST *son1, AST *son2, AST *son3, AST
 void astPrint(AST *node, int level);
 
 //END OF FILE
+
+#endif

@@ -1,3 +1,7 @@
+
+#ifndef ASTREE_C
+#define ASTREE_C
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -17,3 +21,5 @@ AST* astCreate(int type, HASH_NODE *symbol, AST *son0, AST *son1, AST *son2, AST
 
   return new_node;
 }
+
+#endif

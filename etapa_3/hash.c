@@ -1,3 +1,6 @@
+#ifndef HASH_C
+#define HASH_C
+
 #include "hash.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,3 +70,5 @@ HASH_NODE *hashFind (char *text)
 	}
 	return 0;
 }
+
+#endif
