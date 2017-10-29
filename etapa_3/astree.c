@@ -22,4 +22,32 @@ AST* astCreate(int type, HASH_NODE *symbol, AST *son0, AST *son1, AST *son2, AST
   return new_node;
 }
 
+void astPrint(AST *node, int level){
+	int i;
+	if(node){
+		for (i=0; i<level; ++i){
+			fprintf(stderr, "");
+		}
+		
+		fprintf(stderr, "AST( ");
+		
+		switch (node->type){
+			case AST_SYMBOL: fprint(stderr, "SYMBOL,"); break;
+			case AST_ADD: fprint(stderr, "AST_ADD,"); break;
+			case AST_MUL: fprint(stderr, "AST_MUL,"); break;
+			default: fprint(stderr, "UNKNOWN"); break;
+		}
+		
+		if(node->symbol){
+			fprint(stderr, "%s\n", node->symbol->text);
+		}else{
+			fprint(stderr, "\n");
+		}
+		
+		for(i=0; i<MAX_SONS; ++i){
+			astPrint(node->son[i];
+		}
+		
+	}	
+}
 #endif
