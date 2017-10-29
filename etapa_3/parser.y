@@ -44,6 +44,10 @@ int yyerror(char *msg);
 %token TOKEN_ERROR 290
 
 %type<ast> exp
+%type<ast> vardec
+%type<ast> tipevardec
+%type<ast> vectorinit
+%type<ast> literal
 
 
 %left OPERATOR_AND OPERATOR_OR '!'
@@ -58,31 +62,31 @@ decl : dec decl
 	|
 	;
 
-dec : vardec
+dec : vardec				{ astPrint($1,0);}
 	| fundec
 	;
 
-vardec : SYMBOL_IDENTIFIER ':' tipevardec '=' literal ';'
-	| SYMBOL_IDENTIFIER ':' tipevardec'['SYMBOL_LIT_INT']' vectorinit ';'
+vardec : SYMBOL_IDENTIFIER ':' tipevardec '=' literal ';'					{ $$ = astCreate(AST_VAR_DEC,$1,$3,$5,0,0); }
+	| SYMBOL_IDENTIFIER ':' tipevardec'['literal']' vectorinit ';'	{ $$ = astCreate(AST_VECTOR_DEC,$1,$3,$5,$7,0); }
 	;
 
-vectorinit: SYMBOL_LIT_INT vectorinit
-	| SYMBOL_LIT_REAL vectorinit
-	| SYMBOL_LIT_CHAR vectorinit
-	|
+vectorinit: SYMBOL_LIT_INT vectorinit					{ $$ = astCreate(AST_SYMBOL,$1,$2,0,0,0); }
+	| SYMBOL_LIT_REAL vectorinit						{ $$ = astCreate(AST_SYMBOL,$1,$2,0,0,0); }
+	| SYMBOL_LIT_CHAR vectorinit						{ $$ = astCreate(AST_SYMBOL,$1,$2,0,0,0); }
+	|													{ $$ = 0; }
 	;
 
-tipevardec: KW_BYTE							
-	| KW_SHORT								
-	| KW_LONG								
-	| KW_FLOAT								
-	| KW_DOUBLE								
+tipevardec: KW_BYTE						{ $$ = astCreate(AST_KW_BYTE,0,0,0,0,0); }
+	| KW_SHORT							{ $$ = astCreate(AST_KW_SHORT,0,0,0,0,0); }
+	| KW_LONG							{ $$ = astCreate(AST_KW_LONG,0,0,0,0,0); }
+	| KW_FLOAT							{ $$ = astCreate(AST_KW_FLOAT,0,0,0,0,0); }
+	| KW_DOUBLE							{ $$ = astCreate(AST_KW_DOUBLE,0,0,0,0,0); }
 	;
 
-literal: SYMBOL_LIT_INT						
-	| SYMBOL_LIT_REAL						
-	| SYMBOL_LIT_CHAR						
-	| SYMBOL_LIT_STRING					
+literal: SYMBOL_LIT_INT					{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
+	| SYMBOL_LIT_REAL					{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
+	| SYMBOL_LIT_CHAR					{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
+	| SYMBOL_LIT_STRING					{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
 	;
 
 fundec : '('tipevardec')' SYMBOL_IDENTIFIER '(' funargl ')' block	
@@ -124,7 +128,7 @@ restprint: ',' argprint restprint
 	|
 	;
 
-argprint: exp								{ astPrint($1,0);}
+argprint: exp								
 	| SYMBOL_LIT_STRING
 	;
 
@@ -132,8 +136,8 @@ exp :  exp '+' exp							{ $$ = astCreate(AST_ADD,0,$1,$3,0,0); }
 	| exp '-' exp							{ $$ = astCreate(AST_SUB,0,$1,$3,0,0); }
 	| exp '*' exp							{ $$ = astCreate(AST_MUL,0,$1,$3,0,0); }
 	| exp '/' exp							{ $$ = astCreate(AST_DIV,0,$1,$3,0,0); }
-	| exp '<' exp							{ $$ = astCreate(AST_L,0,$1,$3,0,0); }
-	| exp '>' exp							{ $$ = astCreate(AST_G,0,$1,$3,0,0); }
+	| exp '<' exp							{ $$ = astCreate(AST_LESS,0,$1,$3,0,0); }
+	| exp '>' exp							{ $$ = astCreate(AST_GREAT,0,$1,$3,0,0); }
 	| exp '!' exp							{ $$ = astCreate(AST_NEG,0,$1,$3,0,0); }
 	| exp OPERATOR_LE exp					{ $$ = astCreate(AST_LE,0,$1,$3,0,0); }
 	| exp OPERATOR_GE exp					{ $$ = astCreate(AST_GE,0,$1,$3,0,0); }
@@ -150,7 +154,7 @@ exp :  exp '+' exp							{ $$ = astCreate(AST_ADD,0,$1,$3,0,0); }
 	| '('exp')'								{ $$ = astCreate(AST_EXP_P,0,$2,0,0,0); }
 	;
 
-funparaml: exp funparamrest
+funparaml: exp funparamrest					{ astPrint($1,0);}
 	|
 	;
 

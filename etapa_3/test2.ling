@@ -1,10 +1,6 @@
 a: short = 0;
 i: long = 0;
 v1: byte[10] 'q' 0 0 0 0 0 0 0 0 0; 
-v1: short[10] 0 0 0 0 0 0 0 0 0 0; 
-v1: long[10] 0 0 0 0 0 0 0 0 0 0; 
-v1: float[10] 0 0 0 0 0 0 0 0 0 0; 
-v1: double[10] 0 0 0 0 0 0 0 0 0 0; 
 mat: long[10]; 
 f: float = 10.55;
 c: byte = 'x';

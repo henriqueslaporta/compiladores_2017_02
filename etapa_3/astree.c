@@ -26,15 +26,37 @@ void astPrint(AST *node, int level){
 	int i;
 	if(node){
 		for (i=0; i<level; ++i){
-			fprintf(stderr, "");
+			fprintf(stderr, "   ");
 		}
 		
-		fprintf(stderr, "AST( ");
-		
 		switch (node->type){
-			case AST_SYMBOL: fprintf(stderr, "SYMBOL,"); break;
-			case AST_ADD: fprintf(stderr, "AST_ADD,"); break;
-			case AST_MUL: fprintf(stderr, "AST_MUL,"); break;
+			case AST_SYMBOL: fprintf(stderr, "SYMBOL "); break;
+			case AST_ADD: fprintf(stderr, "AST_ADD "); break;
+			case AST_SUB: fprintf(stderr, "AST_SUB "); break;
+			case AST_MUL: fprintf(stderr, "AST_MUL "); break;
+			case AST_DIV: fprintf(stderr, "AST_DIV "); break;
+			case AST_LESS: fprintf(stderr, "AST_LESS "); break;
+			case AST_GREAT: fprintf(stderr, "AST_GREAT "); break;
+			case AST_NEG: fprintf(stderr, "AST_NEG "); break;
+			case AST_EQ: fprintf(stderr, "AST_EQ "); break;
+			case AST_LE: fprintf(stderr, "AST_LE "); break;
+			case AST_GE: fprintf(stderr, "AST_GE "); break;
+			case AST_NE: fprintf(stderr, "AST_NE "); break;
+			case AST_AND: fprintf(stderr, "AST_AND "); break;
+			case AST_OR: fprintf(stderr, "AST_OR "); break;
+			case AST_VAR_DEC: fprintf(stderr, "AST_VAR_DEC "); break;
+			case AST_VECTOR_DEC: fprintf(stderr, "AST_VECTOR_DEC "); break;
+			case AST_VEC_INT: fprintf(stderr, "AST_VEC_INT "); break;
+			case AST_VEC_REAL: fprintf(stderr, "AST_VEC_REAL "); break;
+			case AST_VEC_CHAR: fprintf(stderr, "AST_VEC_CHAR "); break;
+			case AST_KW_BYTE: fprintf(stderr, "AST_KW_BYTE "); break;
+			case AST_KW_SHORT: fprintf(stderr, "AST_KW_SHORT "); break;
+			case AST_KW_LONG: fprintf(stderr, "AST_KW_LONG "); break;
+			case AST_KW_FLOAT: fprintf(stderr, "AST_KW_FLOAT "); break;
+			case AST_KW_DOUBLE: fprintf(stderr, "AST_KW_DOUBLE "); break;
+			
+			
+			
 			default: fprintf(stderr, "UNKNOWN"); break;
 		}
 		
@@ -45,7 +67,7 @@ void astPrint(AST *node, int level){
 		}
 		
 		for(i=0; i<MAX_SONS; ++i){
-			astPrint(node->sons[i],0);
+			astPrint(node->sons[i],level+1);
 		}
 		
 	}	
