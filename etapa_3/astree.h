@@ -57,6 +57,8 @@
 #define AST_CMD_IF		41
 #define AST_CMD_WHILE	42
 
+#define AST_FUNPARAML	43
+
 
 typedef struct ast_node{
   int type;

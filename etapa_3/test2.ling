@@ -14,7 +14,7 @@ d: byte = 65;
 	else
 		i=2;
 
-	while(voidfunc(d+1))
+	while(voidfunc(d+1, H, oi))
 		i=2	
 
 	

@@ -63,6 +63,8 @@ int yyerror(char *msg);
 %type<ast> eprint
 %type<ast> restprint
 %type<ast> argprint
+%type<ast> funparaml
+%type<ast> funparamrest
 
 %left OPERATOR_AND OPERATOR_OR '!'
 %left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE
@@ -159,7 +161,7 @@ exp :  exp '+' exp							{ $$ = astCreate(AST_ADD,0,$1,$3,0,0); }
 	| exp OPERATOR_NE exp					{ $$ = astCreate(AST_NE,0,$1,$3,0,0); }
 	| exp OPERATOR_AND exp					{ $$ = astCreate(AST_AND,0,$1,$3,0,0); }
 	| exp OPERATOR_OR exp					{ $$ = astCreate(AST_OR,0,$1,$3,0,0); }
-	| SYMBOL_IDENTIFIER '('funparaml')'		{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
+	| SYMBOL_IDENTIFIER '('funparaml')'		{ $$ = astCreate(AST_SYMBOL,$1,$3,0,0,0); }
 	| SYMBOL_IDENTIFIER '['exp']'			{ $$ = astCreate(AST_SYMBOL,$1,$3,0,0,0); }
 	| SYMBOL_LIT_INT						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
 	| SYMBOL_LIT_REAL						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
@@ -168,12 +170,12 @@ exp :  exp '+' exp							{ $$ = astCreate(AST_ADD,0,$1,$3,0,0); }
 	| '('exp')'								{ $$ = astCreate(AST_EXP_P,0,$2,0,0,0); }
 	;
 
-funparaml: exp funparamrest					
-	|
+funparaml: exp funparamrest					{ $$ = astCreate(AST_FUNPARAML,0,$1,$2,0,0); }
+	|										{ $$ = 0; }
 	;
 
-funparamrest : ',' exp funparamrest
-	|
+funparamrest : ',' exp funparamrest			{ $$ = astCreate(AST_FUNPARAML,0,$2,$3,0,0); }
+	|										{ $$ = 0; }
 	;
 
 

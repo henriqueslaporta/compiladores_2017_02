@@ -65,7 +65,8 @@ void astPrint(AST *node, int level){
 			case AST_ATRIB: fprintf(stderr, "AST_ATRIB "); break;
 			case AST_VEC_ATRIB: fprintf(stderr, "AST_VEC_ATRIB "); break;
 			case AST_CMD_IF: fprintf(stderr, "AST_CMD_IF "); break;
-			case AST_CMD_WHILE: fprintf(stderr, "AST_CMD_WHILE "); break;			
+			case AST_CMD_WHILE: fprintf(stderr, "AST_CMD_WHILE "); break;
+			case AST_FUNPARAML: fprintf(stderr, "AST_FUNPARAML "); break;			
 			
 			default: fprintf(stderr, "UNKNOWN"); break;
 		}
