@@ -32,20 +32,20 @@ void astPrint(AST *node, int level){
 		fprintf(stderr, "AST( ");
 		
 		switch (node->type){
-			case AST_SYMBOL: fprint(stderr, "SYMBOL,"); break;
-			case AST_ADD: fprint(stderr, "AST_ADD,"); break;
-			case AST_MUL: fprint(stderr, "AST_MUL,"); break;
-			default: fprint(stderr, "UNKNOWN"); break;
+			case AST_SYMBOL: fprintf(stderr, "SYMBOL,"); break;
+			case AST_ADD: fprintf(stderr, "AST_ADD,"); break;
+			case AST_MUL: fprintf(stderr, "AST_MUL,"); break;
+			default: fprintf(stderr, "UNKNOWN"); break;
 		}
 		
 		if(node->symbol){
-			fprint(stderr, "%s\n", node->symbol->text);
+			fprintf(stderr, "%s\n", node->symbol->text);
 		}else{
-			fprint(stderr, "\n");
+			fprintf(stderr, "\n");
 		}
 		
 		for(i=0; i<MAX_SONS; ++i){
-			astPrint(node->son[i];
+			astPrint(node->sons[i],0);
 		}
 		
 	}	

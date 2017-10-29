@@ -44,9 +44,7 @@ int yyerror(char *msg);
 %token TOKEN_ERROR 290
 
 %type<ast> exp
-%type<ast> lcmd
-%type<ast> cmd
-%type<ast> block
+
 
 %left OPERATOR_AND OPERATOR_OR '!'
 %left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE
@@ -74,38 +72,38 @@ vectorinit: SYMBOL_LIT_INT vectorinit
 	|
 	;
 
-tipevardec: KW_BYTE							{ $$ = astCreate(AST_BYTE,$1,0,0,0,0); }
-	| KW_SHORT								{ $$ = astCreate(AST_SHORT,$1,0,0,0,0); }
-	| KW_LONG								{ $$ = astCreate(AST_LONG,$1,0,0,0,0); }
-	| KW_FLOAT								{ $$ = astCreate(AST_FLOAT,$1,0,0,0,0); }
-	| KW_DOUBLE								{ $$ = astCreate(AST_DOUBLE,$1,0,0,0,0); }
+tipevardec: KW_BYTE							
+	| KW_SHORT								
+	| KW_LONG								
+	| KW_FLOAT								
+	| KW_DOUBLE								
 	;
 
-literal: SYMBOL_LIT_INT						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
-	| SYMBOL_LIT_REAL						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
-	| SYMBOL_LIT_CHAR						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
-	| SYMBOL_LIT_STRING						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
+literal: SYMBOL_LIT_INT						
+	| SYMBOL_LIT_REAL						
+	| SYMBOL_LIT_CHAR						
+	| SYMBOL_LIT_STRING					
 	;
 
-fundec : '('tipevardec')' SYMBOL_IDENTIFIER '(' funargl ')' block	{ $$ = astCreate(AST_FUNDEC,0,$2,$4,$6,0); }
+fundec : '('tipevardec')' SYMBOL_IDENTIFIER '(' funargl ')' block	
 	;
 
-funargl: funarg funrest						{ $$ = $1; }
-	|										{ $$ = 0; }
+funargl: funarg funrest					
+	|										
 	;
 
-funrest: ',' funarg funrest					{ $$ = $2; }
-	|										{ $$ = 0; }
+funrest: ',' funarg funrest					
+	|									
 	;
 
-funarg: SYMBOL_IDENTIFIER ':' tipevardec	{ $$ = astCreate(AST_SYMBOL,$1,$3,0,0,0); }
+funarg: SYMBOL_IDENTIFIER ':' tipevardec
 	;
 
-block : '{' lcmd '}'						{ $$ = $2; }
+block : '{' lcmd '}'			
 	;
 
-lcmd: cmd ';' lcmd							{ $$ = astCreate(AST_LCMD,0,$1,$3,0,0); }
-	| cmd									{ $$ = astCreate(AST_CMD,0,$1,0,0,0); }
+lcmd: cmd ';' lcmd						
+	| cmd					
 	;
 
 cmd : SYMBOL_IDENTIFIER '=' exp
@@ -126,7 +124,7 @@ restprint: ',' argprint restprint
 	|
 	;
 
-argprint: exp
+argprint: exp								{ astPrint($1,0);}
 	| SYMBOL_LIT_STRING
 	;
 
@@ -143,7 +141,7 @@ exp :  exp '+' exp							{ $$ = astCreate(AST_ADD,0,$1,$3,0,0); }
 	| exp OPERATOR_NE exp					{ $$ = astCreate(AST_NE,0,$1,$3,0,0); }
 	| exp OPERATOR_AND exp					{ $$ = astCreate(AST_AND,0,$1,$3,0,0); }
 	| exp OPERATOR_OR exp					{ $$ = astCreate(AST_OR,0,$1,$3,0,0); }
-	| SYMBOL_IDENTIFIER '('funparaml')'		{ $$ = astCreate(AST_SYMBOL,$1,$3,0,0,0); }
+	| SYMBOL_IDENTIFIER '('funparaml')'		{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
 	| SYMBOL_IDENTIFIER '['exp']'			{ $$ = astCreate(AST_SYMBOL,$1,$3,0,0,0); }
 	| SYMBOL_LIT_INT						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
 	| SYMBOL_LIT_REAL						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
@@ -162,11 +160,11 @@ funparamrest : ',' exp funparamrest
 
 
 
-cmdif: KW_IF '('exp')' KW_THEN cmd				{ $$ = astCreate(AST_IF_ELSE,0,$3,$6,0,0); }
-	| KW_IF '('exp')' KW_THEN cmd KW_ELSE cmd	{ $$ = astCreate(AST_IF_ELSE,0,$3,$6,$8,0); }
+cmdif: KW_IF '('exp')' KW_THEN cmd				
+	| KW_IF '('exp')' KW_THEN cmd KW_ELSE cmd	
 	;
 
-cmdwhile: KW_WHILE '('exp')' cmd				{ $$ = astCreate(AST_WHILE,0,$3,$5,0,0); }
+cmdwhile: KW_WHILE '('exp')' cmd
 	;
 
 

@@ -19,6 +19,7 @@
 #define AST_L 		8
 #define AST_G 		9
 #define AST_NEG 	10
+#define AST_EQ 		21
 #define AST_LE 		11
 #define AST_GE 		12
 #define AST_NE 		13
@@ -29,6 +30,7 @@
 #define AST_LONG 	18
 #define AST_FLOAT 	19
 #define AST_DOUBLE 	20
+#define AST_EXP_P 	22
 
 typedef struct ast_node{
   int type;
