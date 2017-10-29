@@ -58,12 +58,13 @@
 #define AST_CMD_WHILE	42
 
 #define AST_FUNPARAML	43
+#define AST_CMD_LIST	44
 
 
 typedef struct ast_node{
   int type;
   HASH_NODE *symbol;
-  struct asst_node* sons[MAX_SONS];
+  struct ast_node* sons[MAX_SONS];
 }AST;
 
 //PROTOTYPES

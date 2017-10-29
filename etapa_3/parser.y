@@ -119,10 +119,10 @@ funrest: ',' funarg funrest				{ $$ = $2; }
 funarg: SYMBOL_IDENTIFIER ':' tipevardec	{ $$ = astCreate(AST_SYMBOL,$1,$3,0,0,0); }
 	;
 
-block : '{' lcmd '}'			{ $$ = $2; }
+block : '{' lcmd '}'			{ $$ = astCreate(AST_BLOCK,0,$2,0,0,0);  }
 	;
 
-lcmd: cmd ';' lcmd				{ $$ = astCreate(AST_BLOCK,0,$1,$3,0,0); }
+lcmd: cmd ';' lcmd				{ $$ = astCreate(AST_CMD_LIST,0,$1,$3,0,0); }
 	| cmd						{ $$ = $1; }
 	;
 
