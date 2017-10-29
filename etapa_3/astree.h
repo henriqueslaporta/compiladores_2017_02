@@ -1,8 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
 
 #ifndef ASTREE_HEADER
 #define ASTREE_HEADER
+
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "hash.h"
 
@@ -16,7 +17,7 @@
 typedef struct ast_node{
   int type;
   HASH_NODE *symbol;
-  AST *sons[MAX_SONS];
+  struct asst_node* sons[MAX_SONS];
 }AST;
 
 //PROTOTYPES

@@ -1,5 +1,5 @@
-etapa2: y.tab.o lex.yy.o hash.o main.o astree.o
-	gcc y.tab.o lex.yy.o hash.o main.o -o astree.o etapa3
+etapa3: y.tab.o lex.yy.o hash.o main.o astree.o
+	gcc y.tab.o lex.yy.o hash.o main.o astree.o -o etapa3
 
 lex.yy.o: lex.yy.c
 	gcc lex.yy.c -c
@@ -23,4 +23,4 @@ lex.yy.c: scanner.l
 	lex scanner.l
 
 clean:
-	rm etapa2 lex.yy.c *.o y.tab.c y.tab.h y.output
+	rm etapa3 lex.yy.c *.o y.tab.c y.tab.h y.output

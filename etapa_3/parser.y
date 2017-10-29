@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "hash.h"
 #include "astree.h"
+#include "hash.h"
 
 int yylex();
 int yyerror(char *msg);
