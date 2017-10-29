@@ -30,6 +30,7 @@ void astPrint(AST *node, int level){
 		}
 		
 		switch (node->type){
+			case AST_DEC: fprintf(stderr, "AST_DEC "); break;	
 			case AST_SYMBOL: fprintf(stderr, "SYMBOL "); break;
 			case AST_ADD: fprintf(stderr, "AST_ADD "); break;
 			case AST_SUB: fprintf(stderr, "AST_SUB "); break;
@@ -54,8 +55,17 @@ void astPrint(AST *node, int level){
 			case AST_KW_LONG: fprintf(stderr, "AST_KW_LONG "); break;
 			case AST_KW_FLOAT: fprintf(stderr, "AST_KW_FLOAT "); break;
 			case AST_KW_DOUBLE: fprintf(stderr, "AST_KW_DOUBLE "); break;
-			
-			
+			case AST_KW_READ: fprintf(stderr, "AST_KW_READ "); break;
+			case AST_KW_RETURN: fprintf(stderr, "AST_KW_RETURN "); break;
+			case AST_KW_PRINT: fprintf(stderr, "AST_KW_PRINT "); break;
+			case AST_ARG_PRINT: fprintf(stderr, "AST_ARG_PRINT "); break;
+			case AST_FUNC_DEC: fprintf(stderr, "AST_FUNC_DEC "); break;
+			case AST_FUNC_ARGL: fprintf(stderr, "AST_FUNC_ARGL "); break;
+			case AST_BLOCK: fprintf(stderr, "AST_BLOCK "); break;
+			case AST_ATRIB: fprintf(stderr, "AST_ATRIB "); break;
+			case AST_VEC_ATRIB: fprintf(stderr, "AST_VEC_ATRIB "); break;
+			case AST_CMD_IF: fprintf(stderr, "AST_CMD_IF "); break;
+			case AST_CMD_WHILE: fprintf(stderr, "AST_CMD_WHILE "); break;			
 			
 			default: fprintf(stderr, "UNKNOWN"); break;
 		}

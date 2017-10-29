@@ -9,6 +9,8 @@
 
 #define MAX_SONS 4
 
+#define AST_DEC		100
+
 #define AST_LCMD 	1
 #define AST_CMD 	2
 #define AST_SYMBOL 	3
@@ -40,6 +42,20 @@
 #define AST_KW_LONG		30
 #define AST_KW_FLOAT 	31
 #define AST_KW_DOUBLE	32
+#define AST_KW_READ		33
+#define AST_KW_RETURN	34
+#define AST_KW_PRINT	35
+#define AST_ARG_PRINT	136
+
+#define AST_FUNC_DEC	36
+#define AST_FUNC_ARGL	37
+
+#define AST_BLOCK		38
+#define AST_ATRIB		39
+#define AST_VEC_ATRIB	40
+
+#define AST_CMD_IF		41
+#define AST_CMD_WHILE	42
 
 
 typedef struct ast_node{
