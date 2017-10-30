@@ -5,8 +5,32 @@ mat: long[10];
 f: float = 10.55;
 c: byte = 'x';
 d: byte = 65;
-(short) voidfunc(param1:byte, param2:float, param3:short)UNKNOWN
-(byte) voidfunc()UNKNOWN
-(long) voidfunc()UNKNOWN
-(float) voidfunc()UNKNOWN
-(double) voidfunc()UNKNOWN
+(short) voidfunc(param1:byte, param2:float, param3:short){
+;
+;
+;
+;
+;
+;
+;
+;
+;
+
+}
+(byte) voidfunc(){
+if (UNKNOWN) them
+	i=2
+else
+	i=2;
+while (voidfunc UNKNOWN)
+	i=2
+}
+(long) voidfunc(){
+
+}
+(float) voidfunc(){
+
+}
+(double) voidfunc(){
+
+}

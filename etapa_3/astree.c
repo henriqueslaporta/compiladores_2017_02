@@ -142,12 +142,57 @@ void astPrintNodeToFile(AST *node, FILE *output_file){
 							if(node->sons[1] != 0)
 								astPrintNodeToFile(node->sons[1], output_file);
 					break;
+			case AST_BLOCK:fprintf(output_file, "{\n");
+							astPrintNodeToFile(node->sons[0], output_file);
+							fprintf(output_file, "\n}");
+					break;
+			case AST_CMD_LIST: astPrintNodeToFile(node->sons[0], output_file);
+							fprintf(output_file, ";\n");
+							astPrintNodeToFile(node->sons[1], output_file);
+					break;
+			case AST_ATRIB: fprintf(output_file, "%s=", node->symbol->text);
+						astPrintNodeToFile(node->sons[0], output_file);
+					break;
+			case AST_VEC_ATRIB: fprintf(output_file, "%s[", node->symbol->text);
+						astPrintNodeToFile(node->sons[0], output_file);
+						fprintf(output_file, "]= ");
+						astPrintNodeToFile(node->sons[1], output_file);
+					break;
 			case AST_KW_BYTE: fprintf(output_file, "byte"); break;
 			case AST_KW_SHORT: fprintf(output_file, "short"); break;
 			case AST_KW_LONG: fprintf(output_file, "long"); break;
 			case AST_KW_FLOAT: fprintf(output_file, "float"); break;
 			case AST_KW_DOUBLE: fprintf(output_file, "double"); break;
-
+			case AST_KW_READ: fprintf(output_file, "read > "); 
+						fprintf(output_file, "%s", node->symbol->text);
+					break;
+			case AST_KW_RETURN: fprintf(output_file, "return "); 
+						astPrintNodeToFile(node->sons[0], output_file);
+					break;
+			case AST_KW_PRINT: fprintf(output_file, "print "); 
+						astPrintNodeToFile(node->sons[0], output_file);
+					break;
+			case AST_ARG_PRINT: astPrintNodeToFile(node->sons[0], output_file);
+						if(node->sons[1] != 0){
+							fprintf(output_file, ", "); 
+							astPrintNodeToFile(node->sons[0]->sons[0], output_file);
+						}
+					break;
+			case AST_CMD_IF: fprintf(output_file, "if ("); 
+						astPrintNodeToFile(node->sons[0], output_file);
+						fprintf(output_file, ") them\n\t");
+						astPrintNodeToFile(node->sons[1], output_file);
+						fprintf(output_file, "\n");
+						if(node->sons[2] != 0){
+							fprintf(output_file, "else\n\t");
+							astPrintNodeToFile(node->sons[2], output_file);
+						}
+					break;
+			case AST_CMD_WHILE: fprintf(output_file, "while ("); 
+						astPrintNodeToFile(node->sons[0], output_file);
+						fprintf(output_file, ")\n\t");
+						astPrintNodeToFile(node->sons[1], output_file);
+					break;
 			default: fputs("UNKNOWN", output_file); break;	
 		}
 	}
