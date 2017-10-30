@@ -30,7 +30,7 @@ void astPrint(AST *node, int level){
 		}
 		
 		switch (node->type){
-			case AST_DEC: fprintf(stderr, "AST_DEC "); break;	
+			case AST_DECLARATION: fprintf(stderr, "AST_DEC "); break;	
 			case AST_SYMBOL: fprintf(stderr, "SYMBOL "); break;
 			case AST_ADD: fprintf(stderr, "AST_ADD "); break;
 			case AST_SUB: fprintf(stderr, "AST_SUB "); break;
@@ -97,6 +97,9 @@ void astPrintToFile(AST *root, FILE *output_file){
 void astPrintNodeToFile(AST *node, FILE *output_file){
 	if(node){
 		switch(node->type){
+			case AST_DECLARATION: astPrintNodeToFile(node->sons[0], output_file);
+								astPrintNodeToFile(node->sons[1], output_file);
+						break;
 			case AST_VAR_DEC: fprintf(output_file, "%s: ", node->symbol->text);
 					  astPrintNodeToFile(node->sons[0], output_file);
 					  fprintf(output_file, " = ");

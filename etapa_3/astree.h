@@ -9,7 +9,7 @@
 
 #define MAX_SONS 4
 
-#define AST_DEC		100
+#define AST_DECLARATION		100
 
 #define AST_LCMD 	1
 #define AST_CMD 	2

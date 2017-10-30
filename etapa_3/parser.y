@@ -72,9 +72,9 @@ int yyerror(char *msg);
 %left '*' '/'
 
 %%
-program : decl				
+program : decl				{ /*astPrint($1,0);*/ astPrintToFile($1, outputfile);}
 
-decl : dec decl				{ astPrint($1,0); astPrintToFile($1, outputfile);}
+decl : dec decl				{ $$ = astCreate(AST_DECLARATION,0,$1,$2,0,0); }
 	|						{ $$ = 0; }
 	;
 
