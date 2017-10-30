@@ -74,7 +74,7 @@ int yyerror(char *msg);
 %%
 program : decl				
 
-decl : dec decl				{ astPrint($1,0);}
+decl : dec decl				{ astPrint($1,0); astPrintToFile($1, outputfile);}
 	|						{ $$ = 0; }
 	;
 

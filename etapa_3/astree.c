@@ -8,8 +8,6 @@
 #include "astree.h"
 #include "hash.h"
 
-void astPrintNodeToFile(AST *node, FILE *output_file);
-
 AST* astCreate(int type, HASH_NODE *symbol, AST *son0, AST *son1, AST *son2, AST *son3){
   AST *new_node;
   new_node = (AST*) calloc (1, sizeof(AST));
@@ -87,27 +85,46 @@ void astPrint(AST *node, int level){
 	}	
 }
 
-void astPrintToFile(AST *root, char *filename){
-	FILE *output_file;	
-	output_file = fopen(filename, "w");
-
+void astPrintToFile(AST *root, FILE *output_file){
+	//FILE *output_file;	
+	//output_file = fopen(filename, "w");
+	int i;
+	
 	astPrintNodeToFile(root, output_file);
 
-	fclose(output_file);
 }
 
 void astPrintNodeToFile(AST *node, FILE *output_file){
 	if(node){
 		switch(node->type){
-			case AST_VAR_DEC: fprintf(output_file, "%s : ", node->symbol->text);
+			case AST_VAR_DEC: fprintf(output_file, "%s: ", node->symbol->text);
+					  astPrintNodeToFile(node->sons[0], output_file);
+					  fprintf(output_file, " = ");
 					  astPrintNodeToFile(node->sons[1], output_file);
-					  fprintf(output_file, " = %s;", node->sons[2]->symbol->text);	
+					  fprintf(output_file, ";\n");
 					  break;
-			case AST_KW_BYTE: fputs("byte", output_file); break;
-			case AST_KW_SHORT: fputs("short", output_file); break;
-			case AST_KW_LONG: fputs("long", output_file); break;
-			case AST_KW_FLOAT: fputs("float", output_file); break;
-			case AST_KW_DOUBLE: fputs("double", output_file); break;
+			case AST_VECTOR_DEC: fprintf(output_file, "%s: ", node->symbol->text);
+					  astPrintNodeToFile(node->sons[0], output_file);
+					  fprintf(output_file, "[");
+					  astPrintNodeToFile(node->sons[1], output_file);
+					  fprintf(output_file, "]");
+					  if(node->sons[2] != 0){
+						fprintf(output_file, " ");
+						astPrintNodeToFile(node->sons[2], output_file); 
+					}
+					  fprintf(output_file, ";\n");
+					  break;
+			case AST_SYMBOL: fprintf(output_file, "%s", node->symbol->text); 
+					if(node->sons[0] != 0){
+						fprintf(output_file, " ");
+						astPrintNodeToFile(node->sons[0], output_file); 
+					}
+					break;
+			case AST_KW_BYTE: fprintf(output_file, "byte"); break;
+			case AST_KW_SHORT: fprintf(output_file, "short"); break;
+			case AST_KW_LONG: fprintf(output_file, "long"); break;
+			case AST_KW_FLOAT: fprintf(output_file, "float"); break;
+			case AST_KW_DOUBLE: fprintf(output_file, "double"); break;
 
 			default: fputs("UNKNOWN", output_file); break;	
 		}

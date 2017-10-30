@@ -60,6 +60,7 @@
 #define AST_FUNPARAML	43
 #define AST_CMD_LIST	44
 
+FILE* outputfile;
 
 typedef struct ast_node{
   int type;
@@ -71,7 +72,8 @@ typedef struct ast_node{
 
 AST* astCreate(int type, HASH_NODE *symbol, AST *son1, AST *son2, AST *son3, AST *son4);
 void astPrint(AST *node, int level);
-void astPrintToFile(AST *root, char *filename);
+void astPrintToFile(AST *root, FILE *output_file);
+void astPrintNodeToFile(AST *node, FILE *output_file);
 
 //END OF FILE
 
