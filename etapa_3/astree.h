@@ -49,6 +49,7 @@
 
 #define AST_FUNC_DEC	36
 #define AST_FUNC_ARGL	37
+#define AST_FUNC_ARG	138
 
 #define AST_BLOCK		38
 #define AST_ATRIB		39

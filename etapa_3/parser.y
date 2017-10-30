@@ -112,7 +112,7 @@ funargl: funarg funrest					{ $$ = astCreate(AST_FUNC_ARGL,0,$1,$2,0,0); }
 	|									{ $$  = 0; }
 	;
 
-funrest: ',' funarg funrest				{ $$ = $2; }
+funrest: ',' funarg funrest				{ $$ = astCreate(AST_FUNC_ARG,0,$2,$3,0,0); }
 	|									{ $$  = 0; }
 	;
 

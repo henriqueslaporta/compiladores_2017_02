@@ -123,6 +123,25 @@ void astPrintNodeToFile(AST *node, FILE *output_file){
 						astPrintNodeToFile(node->sons[0], output_file); 
 					}
 					break;
+			case AST_FUNC_DEC: fprintf(output_file, "(");
+							astPrintNodeToFile(node->sons[0], output_file); 
+							fprintf(output_file, ") ");
+							fprintf(output_file, "%s(", node->symbol->text);
+							astPrintNodeToFile(node->sons[2], output_file);
+							fprintf(output_file, ")");
+							astPrintNodeToFile(node->sons[3], output_file);
+							fprintf(output_file, "\n");
+					break;
+			case AST_FUNC_ARGL: fprintf(output_file, "%s:", node->sons[0]->symbol->text);
+							astPrintNodeToFile(node->sons[0]->sons[0], output_file);
+							if(node->sons[1] != 0)
+								astPrintNodeToFile(node->sons[1], output_file);
+					break;
+			case AST_FUNC_ARG: fprintf(output_file, ", %s:", node->sons[0]->symbol->text);
+							astPrintNodeToFile(node->sons[0]->sons[0], output_file);
+							if(node->sons[1] != 0)
+								astPrintNodeToFile(node->sons[1], output_file);
+					break;
 			case AST_KW_BYTE: fprintf(output_file, "byte"); break;
 			case AST_KW_SHORT: fprintf(output_file, "short"); break;
 			case AST_KW_LONG: fprintf(output_file, "long"); break;

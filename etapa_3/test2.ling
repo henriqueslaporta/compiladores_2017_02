@@ -6,7 +6,7 @@ f: float = 10.55;
 c: byte = 'x';
 d: byte = 65;
 
-(short) voidfunc(param1 : byte, param2 : float) {;;;;;;;;;}
+(short) voidfunc(param1 : byte, param2 : float, param3 : short) {;;;;;;;;;}
 
 (byte) voidfunc() {
 	if (a==11) then
