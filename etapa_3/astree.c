@@ -173,6 +173,7 @@ void astPrintNodeToFile(AST *node, FILE *output_file){
 			case AST_KW_PRINT: fprintf(output_file, "print ");
 						astPrintNodeToFile(node->sons[0], output_file);
 					break;
+      case AST_FUNPARAML:
 			case AST_ARG_PRINT: astPrintNodeToFile(node->sons[0], output_file);
 						if(node->sons[1] != 0){
 							fprintf(output_file, ", ");
@@ -181,7 +182,7 @@ void astPrintNodeToFile(AST *node, FILE *output_file){
 					break;
 			case AST_CMD_IF: fprintf(output_file, "if (");
 						astPrintNodeToFile(node->sons[0], output_file);
-						fprintf(output_file, ") them\n\t");
+						fprintf(output_file, ") then\n\t");
 						astPrintNodeToFile(node->sons[1], output_file);
 						fprintf(output_file, "\n");
 						if(node->sons[2] != 0){
@@ -249,6 +250,10 @@ void astPrintNodeToFile(AST *node, FILE *output_file){
       case AST_ARRAY_POS: fprintf(output_file, "%s[", node->symbol->text);
             astPrintNodeToFile(node->sons[0], output_file);
             fprintf(output_file, "]");
+            break;
+      case AST_FUNC_CALL: fprintf(output_file, "%s(", node->symbol->text);
+            astPrintNodeToFile(node->sons[0], output_file);
+            fprintf(output_file, ")");
             break;
       case AST_EXP_P: fprintf(output_file, "( ");
             astPrintNodeToFile(node->sons[0], output_file);
