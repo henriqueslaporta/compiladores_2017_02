@@ -72,7 +72,7 @@ int yyerror(char *msg);
 %left '*' '/'
 
 %%
-program : decl				{ /*astPrint($1,0);*/ astPrintToFile($1, outputfile);}
+program : decl				{ astPrint($1,0);/**/ astPrintToFile($1, outputfile);}
 
 decl : dec decl				{ $$ = astCreate(AST_DECLARATION,0,$1,$2,0,0); }
 	|						{ $$ = 0; }
@@ -162,7 +162,7 @@ exp :  exp '+' exp							{ $$ = astCreate(AST_ADD,0,$1,$3,0,0); }
 	| exp OPERATOR_AND exp					{ $$ = astCreate(AST_AND,0,$1,$3,0,0); }
 	| exp OPERATOR_OR exp					{ $$ = astCreate(AST_OR,0,$1,$3,0,0); }
 	| SYMBOL_IDENTIFIER '('funparaml')'		{ $$ = astCreate(AST_SYMBOL,$1,$3,0,0,0); }
-	| SYMBOL_IDENTIFIER '['exp']'			{ $$ = astCreate(AST_SYMBOL,$1,$3,0,0,0); }
+	| SYMBOL_IDENTIFIER '['exp']'			{ $$ = astCreate(AST_ARRAY_POS,$1,$3,0,0,0); }
 	| SYMBOL_LIT_INT						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
 	| SYMBOL_LIT_REAL						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
 	| SYMBOL_LIT_CHAR						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }

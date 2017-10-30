@@ -60,6 +60,7 @@
 
 #define AST_FUNPARAML	43
 #define AST_CMD_LIST	44
+#define AST_ARRAY_POS 45
 
 FILE* outputfile;
 
