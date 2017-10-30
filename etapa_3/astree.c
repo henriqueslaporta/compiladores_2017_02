@@ -8,6 +8,8 @@
 #include "astree.h"
 #include "hash.h"
 
+void astPrintNodeToFile(AST *node, FILE *output_file);
+
 AST* astCreate(int type, HASH_NODE *symbol, AST *son0, AST *son1, AST *son2, AST *son3){
   AST *new_node;
   new_node = (AST*) calloc (1, sizeof(AST));
@@ -83,5 +85,32 @@ void astPrint(AST *node, int level){
 		}
 		
 	}	
+}
+
+void astPrintToFile(AST *root, char *filename){
+	FILE *output_file;	
+	output_file = fopen(filename, "w");
+
+	astPrintNodeToFile(root, output_file);
+
+	fclose(output_file);
+}
+
+void astPrintNodeToFile(AST *node, FILE *output_file){
+	if(node){
+		switch(node->type){
+			case AST_VAR_DEC: fprintf(output_file, "%s : ", node->symbol->text);
+					  astPrintNodeToFile(node->sons[1], output_file);
+					  fprintf(output_file, " = %s;", node->sons[2]->symbol->text);	
+					  break;
+			case AST_KW_BYTE: fputs("byte", output_file); break;
+			case AST_KW_SHORT: fputs("short", output_file); break;
+			case AST_KW_LONG: fputs("long", output_file); break;
+			case AST_KW_FLOAT: fputs("float", output_file); break;
+			case AST_KW_DOUBLE: fputs("double", output_file); break;
+
+			default: fputs("UNKNOWN", output_file); break;	
+		}
+	}
 }
 #endif
