@@ -1,0 +1,32 @@
+a: short = 0;
+i: long = 0;
+v1: byte[10] 'q' 0 0 0 0 0 0 0 0 0; 
+v1: short[10] 0 0 0 0 0 0 0 0 0 0; 
+v1: long[10] 0 0 0 0 0 0 0 0 0 0; 
+v1: float[10] 0 0 0 0 0 0 0 0 0 0; 
+v1: double[10] 0 0 0 0 0 0 0 0 0 0; 
+mat: long[10]; 
+f: float = 10.55;
+c: byte = 'x';
+d: byte = 65;
+
+(short) voidfunc(param1 : byte, param2 : float) {;;;;;;;;;}
+
+(byte) voidfunc() {
+	if (a==11) then
+    	i=2
+	else
+		i=2;
+
+	while(voidfunc(d,))
+		i=2	
+
+	
+}
+
+
+(long) voidfunc() {}
+
+(float) voidfunc() {}
+
+(double) voidfunc() {}
