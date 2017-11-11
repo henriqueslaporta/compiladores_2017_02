@@ -73,13 +73,7 @@ HASH_NODE *hashFind (char *text)
 }
 
 void hashCheckUndeclared(void){
-	/*int i;
-	HASH_NODE *node;
-	for(i=0; i<HASH_SIZE; i++)
-		for(node=table[addres]; node; node=node->next)
-			if(node->type == SYMBOL_ID)
-				//tem mais coisa pra baixo que não consegui pegar na foto
-/**/
+
 
 }
 

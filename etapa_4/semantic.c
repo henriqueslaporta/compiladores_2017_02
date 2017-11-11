@@ -21,6 +21,20 @@ void semanticSetTypes(AST* node){
       if(node->sons[0]->type == AST_KW_DOUBLE) node->symbol->datatype = DATATYPE_DOUBLE;
     }
   }
+  if(node->type == AST_VECTOR_DEC){
+    if(node->symbol->type != SYMBOL_IDENTIFIER){
+      fprintf(stderr, "semantic error: identifier %s, already declared \n", node->symbol->text);
+      exit(4); //ta aqui por enquanto, tirar depois, os outros exit(4) também
+    }
+    else{
+      node->symbol->type = SYMBOL_VEC;
+      if(node->sons[0]->type == AST_KW_BYTE) node->symbol->datatype = DATATYPE_BYTE;
+      if(node->sons[0]->type == AST_KW_SHORT) node->symbol->datatype = DATATYPE_SHORT;
+      if(node->sons[0]->type == AST_KW_LONG) node->symbol->datatype = DATATYPE_LONG;
+      if(node->sons[0]->type == AST_KW_FLOAT) node->symbol->datatype = DATATYPE_FLOAT;
+      if(node->sons[0]->type == AST_KW_DOUBLE) node->symbol->datatype = DATATYPE_DOUBLE;
+    }
+  }
   if(node->type == AST_FUNC_DEC){
     if(node->symbol->type != SYMBOL_IDENTIFIER){
       fprintf(stderr, "Semantic ERROR: identifier %s, already declared \n", node->symbol->text);
@@ -43,7 +57,12 @@ void semanticSetTypes(AST* node){
 }
 
 void semanticCheckUndeclared(void){
-  /*hashCheckUndeclared();/**/
+  	int i;
+	HASH_NODE *node;
+	for(i=0; i<HASH_SIZE; i++)
+		for(node=table[i]; node; node=node->next)
+			if(node->type ==  SYMBOL_IDENTIFIER) //ERRO esta aqui ainda não revisei
+				fprintf (stderr,"Semantic ERROR: identifier %s, not declared \n",node->text);
 }
 
 void semanticCheckUsage(AST* node){

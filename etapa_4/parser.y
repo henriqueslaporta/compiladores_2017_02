@@ -36,11 +36,11 @@ int yyerror(char *msg);
 %token OPERATOR_AND 274
 %token OPERATOR_OR 275
 
-%token<symbol> SYMBOL_IDENTIFIER
-%token<symbol> SYMBOL_LIT_INT
-%token<symbol> SYMBOL_LIT_REAL
-%token<symbol> SYMBOL_LIT_CHAR
-%token<symbol> SYMBOL_LIT_STRING
+%token<symbol> SYMBOL_IDENTIFIER 300
+%token<symbol> SYMBOL_LIT_INT 301
+%token<symbol> SYMBOL_LIT_REAL 302
+%token<symbol> SYMBOL_LIT_CHAR 303
+%token<symbol> SYMBOL_LIT_STRING 304
 
 %token TOKEN_ERROR 290
 
@@ -76,7 +76,8 @@ int yyerror(char *msg);
 program : decl				{
 	/*astPrint($1,0);/**/
 	astPrintToFile($1, outputfile);
-  semanticSetTypes($1);
+  	semanticSetTypes($1);
+  	semanticCheckUndeclared();
 	} //chamar todas as funçoes de check aqui
 
 decl : dec decl				{ $$ = astCreate(AST_DECLARATION,0,$1,$2,0,0); }

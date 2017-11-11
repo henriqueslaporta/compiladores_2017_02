@@ -6,8 +6,6 @@ f: float = 10.55;
 c: byte = 'x';
 d: byte = 65;
 
-
-
 (short) voidfunc1(param1 : byte, param2 : float, param3 : short) {;;;;;;;;;}
 
 (byte) voidfunc2() {
@@ -17,11 +15,9 @@ d: byte = 65;
 		i=2;
 
 	while(voidfunc(d+1, H, oi))
-		i=2	
+		i=2;
 
-	
+	teste = 0
 }
 
-
-(long) voidfunc2() {}
 

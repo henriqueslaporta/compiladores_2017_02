@@ -13,7 +13,7 @@ int main (int argc, char **argv)
 {
 	if (argc < 3)
 	{
-		fprintf(stderr, "Missing file name.\nCall ./etapa1 {file_name} {outputfile_name}\n");
+		fprintf(stderr, "Missing file name.\nCall ./etapa4 {file_name} {outputfile_name}\n");
 		exit(1);
 	}
 	yyin=fopen(argv[1],"r");
