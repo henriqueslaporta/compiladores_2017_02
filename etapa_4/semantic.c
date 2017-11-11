@@ -88,27 +88,27 @@ void semanticCheckUsage(AST* node){
   //check left-hand side for scalar
   if(node->type == AST_SYMBOL){
     if(node->symbol->type != SYMBOL_VAR){
-      fprintf(stderr, "Semantic ERROR: identifier %s must be scalar\n". node->symbol->text);
+      fprintf(stderr, "Semantic ERROR: identifier %s must be scalar left\n", node->symbol->text);
       exit(4);
     }
   }
     //check right-hand side for scalar
     if(node->type == AST_SYMBOL){
       if(node->symbol->type != SYMBOL_VAR && node->symbol->type !=SYMBOL_LIT_INT){
-        fprintf(stderr, "Semantic ERROR: identifier %s must be scalar\n". node->symbol->text);
+        fprintf(stderr, "Semantic ERROR: identifier %s must be scalar right\n", node->symbol->text);
         exit(4);
       }
     }
     //chack if functions calls are calling functions
     if(node->type == AST_FUNC_CALL){
       if(node->symbol->type != SYMBOL_FUNC){
-        fprintf(stderr, "Semantic ERROR: identifier %s must be scalar\n". node->symbol->text);
+        fprintf(stderr, "Semantic ERROR: identifier %s must be scalar\n", node->symbol->text);
         exit(4);//trocar por um flag que conta o nro de erros e salvar em que linha da o erro
       }
     }
     int i;
     for(i=0; i<MAX_SONS; i++){
-      semanticCheckUsage(node->son[i]);
+      semanticCheckUsage(node->sons[i]);
     }/**/
 }
 

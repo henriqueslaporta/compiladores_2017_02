@@ -1,12 +1,12 @@
 a: short = 0;
-i: long = 0;
+i: long = 0.0;
 v1: byte[10] 'q' 0 0 0 0 0 0 0 0 0; 
 mat: long[10]; 
-f: float = 10.55;
+f: float = 10;
 c: byte = 'x';
 d: byte = 65;
 
-(short) voidfunc1(d: byte, param1 : byte, param2 : float, param3 : short) {;;;;;;;;;}
+(short) voidfunc1(param1 : byte, param2 : float, param3 : short) {;;;;;;;;;}
 
 (byte) voidfunc2() {
 	if (a==11) then
@@ -16,7 +16,6 @@ d: byte = 65;
 
 	while(voidfunc(d+1, H, oi))
 		i=2;
-
 }
 
 
