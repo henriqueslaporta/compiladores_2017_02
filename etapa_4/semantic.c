@@ -38,7 +38,7 @@ void semanticSetTypes(AST* node){
   if(node->type == AST_FUNC_DEC){
     if(node->symbol->type != SYMBOL_IDENTIFIER){
       fprintf(stderr, "Semantic ERROR: identifier %s, already declared \n", node->symbol->text);
-      exit(4);
+      exit(4); //ta aqui por enquanto, tirar depois, os outros exit(4) também
     }
     else{
       node->symbol->type = SYMBOL_FUNC;
@@ -49,6 +49,22 @@ void semanticSetTypes(AST* node){
       if(node->sons[0]->type == AST_KW_DOUBLE) node->symbol->datatype = DATATYPE_DOUBLE;
     }
   }
+  //Para declaração dos argumentos das funções como variaveis válidas
+  if(node->type == AST_FUNC_ARGL || node->type == AST_FUNC_ARG){
+    if(node->sons[0]->symbol->type != SYMBOL_IDENTIFIER){
+      fprintf(stderr, "Semantic ERROR: identifier %s, already declared \n", node->sons[0]->symbol->text);
+      exit(4); //ta aqui por enquanto, tirar depois, os outros exit(4) também
+    }
+    else{
+      node->sons[0]->symbol->type = SYMBOL_VAR;
+      if(node->sons[0]->sons[0]->type == AST_KW_BYTE) node->sons[0]->symbol->datatype = DATATYPE_BYTE;
+      if(node->sons[0]->sons[0]->type == AST_KW_SHORT) node->sons[0]->symbol->datatype = DATATYPE_SHORT;
+      if(node->sons[0]->sons[0]->type == AST_KW_LONG) node->sons[0]->symbol->datatype = DATATYPE_LONG;
+      if(node->sons[0]->sons[0]->type == AST_KW_FLOAT) node->sons[0]->symbol->datatype = DATATYPE_FLOAT;
+      if(node->sons[0]->sons[0]->type == AST_KW_DOUBLE) node->sons[0]->symbol->datatype = DATATYPE_DOUBLE;
+    }
+  }
+  
 
   int i;
   for(i=0; i<MAX_SONS; i++){
