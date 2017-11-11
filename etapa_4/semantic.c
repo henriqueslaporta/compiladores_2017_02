@@ -80,42 +80,31 @@ void semanticCheckUndeclared(void){
 void semanticCheckUsage(AST* node){
   if(!node) return;
   //process this node
-
-  //check usage of the declarations of variables
-  if(node->type == AST_VAR_DEC){
-  	switch(node->sons[0]->type){
-  		case AST_KW_BYTE:
-  			 if(node->sons[1]->symbol->type != SYMBOL_LIT_INT)
-  			 fprintf(stderr, "Semantic ERROR: identifier %s must be scalar byte\n", node->symbol->text);
-      		 break;
-  		case AST_KW_SHORT:
-  			if(node->sons[1]->symbol->type != SYMBOL_LIT_INT && node->sons[1]->symbol->type != SYMBOL_LIT_REAL)
-  			 fprintf(stderr, "Semantic ERROR: identifier %s must be scalar short\n", node->symbol->text);
-      		 break;
-  		case AST_KW_LONG:
-  			if(node->sons[1]->symbol->type != SYMBOL_LIT_INT && node->sons[1]->symbol->type != SYMBOL_LIT_REAL)
-  			 fprintf(stderr, "Semantic ERROR: identifier %s must be scalar long\n", node->symbol->text);
-      		 break;
-  		case AST_KW_FLOAT:
-  			if(node->sons[1]->symbol->type != SYMBOL_LIT_INT && node->sons[1]->symbol->type != SYMBOL_LIT_REAL)
-  			 fprintf(stderr, "Semantic ERROR: identifier %s must be scalar float\n", node->symbol->text);
-      		 break;
-  		case AST_KW_DOUBLE:
-  			if(node->sons[1]->symbol->type != SYMBOL_LIT_INT && node->sons[1]->symbol->type != SYMBOL_LIT_REAL)
-  			 fprintf(stderr, "Semantic ERROR: identifier %s must be scalar double\n", node->symbol->text);
-      		 break;
-  	}
-  }  
-    //check right-hand side for scalar
-    if(node->type == AST_SYMBOL){
-      if(node->symbol->type != SYMBOL_VAR && node->symbol->type !=SYMBOL_LIT_INT){
-        fprintf(stderr, "Semantic ERROR: identifier %s must be scalar right\n", node->symbol->text);
+  	
+  	//check if variables calls are calling variables
+    if(node->type == AST_ATRIB){
+      if(node->symbol->type != SYMBOL_VAR){
+        fprintf(stderr, "Semantic ERROR: identifier %s must be a variable\n", node->symbol->text);
       }
     }
-    //chack if functions calls are calling functions
+    
+    //check if vectors calls are calling vectors
+    if(node->type == AST_VEC_ATRIB){
+      if(node->symbol->type != SYMBOL_VEC){
+        fprintf(stderr, "Semantic ERROR: identifier %s must be a vector\n", node->symbol->text);
+      }
+    }
+  	
+    //check if vectors calls are calling vectors
+    if(node->type == AST_ARRAY_POS){
+      if(node->symbol->type != SYMBOL_VEC){
+        fprintf(stderr, "Semantic ERROR: identifier %s must be a vector\n", node->symbol->text);
+      }
+    }
+    //check if functions calls are calling functions
     if(node->type == AST_FUNC_CALL){
       if(node->symbol->type != SYMBOL_FUNC){
-        fprintf(stderr, "Semantic ERROR: identifier %s must be scalar\n", node->symbol->text);
+        fprintf(stderr, "Semantic ERROR: identifier %s must be a function\n", node->symbol->text);
       }
     }
     int i;
