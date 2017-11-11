@@ -10,7 +10,6 @@ void semanticSetTypes(AST* node){
   if(node->type == AST_VAR_DEC){
     if(node->symbol->type != SYMBOL_IDENTIFIER){
       fprintf(stderr, "semantic error: identifier %s, already declared \n", node->symbol->text);
-      exit(4); //ta aqui por enquanto, tirar depois, os outros exit(4) também
     }
     else{
       node->symbol->type = SYMBOL_VAR;
@@ -24,7 +23,6 @@ void semanticSetTypes(AST* node){
   if(node->type == AST_VECTOR_DEC){
     if(node->symbol->type != SYMBOL_IDENTIFIER){
       fprintf(stderr, "semantic error: identifier %s, already declared \n", node->symbol->text);
-      exit(4); //ta aqui por enquanto, tirar depois, os outros exit(4) também
     }
     else{
       node->symbol->type = SYMBOL_VEC;
@@ -38,7 +36,6 @@ void semanticSetTypes(AST* node){
   if(node->type == AST_FUNC_DEC){
     if(node->symbol->type != SYMBOL_IDENTIFIER){
       fprintf(stderr, "Semantic ERROR: identifier %s, already declared \n", node->symbol->text);
-      exit(4); //ta aqui por enquanto, tirar depois, os outros exit(4) também
     }
     else{
       node->symbol->type = SYMBOL_FUNC;
@@ -53,7 +50,6 @@ void semanticSetTypes(AST* node){
   if(node->type == AST_FUNC_ARGL || node->type == AST_FUNC_ARG){
     if(node->sons[0]->symbol->type != SYMBOL_IDENTIFIER){
       fprintf(stderr, "Semantic ERROR: identifier %s, already declared \n", node->sons[0]->symbol->text);
-      exit(4); //ta aqui por enquanto, tirar depois, os outros exit(4) também
     }
     else{
       node->sons[0]->symbol->type = SYMBOL_VAR;
@@ -82,28 +78,44 @@ void semanticCheckUndeclared(void){
 }
 
 void semanticCheckUsage(AST* node){
-  /*if(!node) return;
+  if(!node) return;
   //process this node
 
-  //check left-hand side for scalar
-  if(node->type == AST_SYMBOL){
-    if(node->symbol->type != SYMBOL_VAR){
-      fprintf(stderr, "Semantic ERROR: identifier %s must be scalar left\n", node->symbol->text);
-      exit(4);
-    }
-  }
+  //check usage of the declarations of variables
+  if(node->type == AST_VAR_DEC){
+  	switch(node->sons[0]->type){
+  		case AST_KW_BYTE:
+  			 if(node->sons[1]->symbol->type != SYMBOL_LIT_INT)
+  			 fprintf(stderr, "Semantic ERROR: identifier %s must be scalar byte\n", node->symbol->text);
+      		 break;
+  		case AST_KW_SHORT:
+  			if(node->sons[1]->symbol->type != SYMBOL_LIT_INT && node->sons[1]->symbol->type != SYMBOL_LIT_REAL)
+  			 fprintf(stderr, "Semantic ERROR: identifier %s must be scalar short\n", node->symbol->text);
+      		 break;
+  		case AST_KW_LONG:
+  			if(node->sons[1]->symbol->type != SYMBOL_LIT_INT && node->sons[1]->symbol->type != SYMBOL_LIT_REAL)
+  			 fprintf(stderr, "Semantic ERROR: identifier %s must be scalar long\n", node->symbol->text);
+      		 break;
+  		case AST_KW_FLOAT:
+  			if(node->sons[1]->symbol->type != SYMBOL_LIT_INT && node->sons[1]->symbol->type != SYMBOL_LIT_REAL)
+  			 fprintf(stderr, "Semantic ERROR: identifier %s must be scalar float\n", node->symbol->text);
+      		 break;
+  		case AST_KW_DOUBLE:
+  			if(node->sons[1]->symbol->type != SYMBOL_LIT_INT && node->sons[1]->symbol->type != SYMBOL_LIT_REAL)
+  			 fprintf(stderr, "Semantic ERROR: identifier %s must be scalar double\n", node->symbol->text);
+      		 break;
+  	}
+  }  
     //check right-hand side for scalar
     if(node->type == AST_SYMBOL){
       if(node->symbol->type != SYMBOL_VAR && node->symbol->type !=SYMBOL_LIT_INT){
         fprintf(stderr, "Semantic ERROR: identifier %s must be scalar right\n", node->symbol->text);
-        exit(4);
       }
     }
     //chack if functions calls are calling functions
     if(node->type == AST_FUNC_CALL){
       if(node->symbol->type != SYMBOL_FUNC){
         fprintf(stderr, "Semantic ERROR: identifier %s must be scalar\n", node->symbol->text);
-        exit(4);//trocar por um flag que conta o nro de erros e salvar em que linha da o erro
       }
     }
     int i;

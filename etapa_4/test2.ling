@@ -1,4 +1,4 @@
-a: short = 0;
+a: short = "0";
 i: long = 0.0;
 v1: byte[10] 'q' 0 0 0 0 0 0 0 0 0; 
 mat: long[10]; 
