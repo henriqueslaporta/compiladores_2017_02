@@ -6,9 +6,14 @@
 #include "astree.h"
 #include "y.tab.h"
 
+int errorFlag;
+
 void semanticSetTypes(AST* node);
 void semanticCheckUndeclared(void);
 void semanticCheckUsage(AST* node);
 void semanticCheckOperands(AST* node);
+void initErrorFlag(void);
+int getErrorFlag(void);
+void addErrorFlag(void);
 
 #endif

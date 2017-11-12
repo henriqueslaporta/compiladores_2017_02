@@ -10,6 +10,7 @@ void semanticSetTypes(AST* node){
   if(node->type == AST_VAR_DEC){
     if(node->symbol->type != SYMBOL_IDENTIFIER){
       fprintf(stderr, "semantic error: identifier %s, already declared \n", node->symbol->text);
+      addErrorFlag();
     }
     else{
       node->symbol->type = SYMBOL_VAR;
@@ -23,6 +24,7 @@ void semanticSetTypes(AST* node){
   if(node->type == AST_VECTOR_DEC){
     if(node->symbol->type != SYMBOL_IDENTIFIER){
       fprintf(stderr, "semantic error: identifier %s, already declared \n", node->symbol->text);
+      addErrorFlag();
     }
     else{
       node->symbol->type = SYMBOL_VEC;
@@ -36,6 +38,7 @@ void semanticSetTypes(AST* node){
   if(node->type == AST_FUNC_DEC){
     if(node->symbol->type != SYMBOL_IDENTIFIER){
       fprintf(stderr, "Semantic ERROR: identifier %s, already declared \n", node->symbol->text);
+      addErrorFlag();
     }
     else{
       node->symbol->type = SYMBOL_FUNC;
@@ -50,6 +53,7 @@ void semanticSetTypes(AST* node){
   if(node->type == AST_FUNC_ARGL || node->type == AST_FUNC_ARG){
     if(node->sons[0]->symbol->type != SYMBOL_IDENTIFIER){
       fprintf(stderr, "Semantic ERROR: identifier %s, already declared \n", node->sons[0]->symbol->text);
+      addErrorFlag();
     }
     else{
       node->sons[0]->symbol->type = SYMBOL_VAR;
@@ -73,8 +77,10 @@ void semanticCheckUndeclared(void){
 	HASH_NODE *node;
 	for(i=0; i<HASH_SIZE; i++)
 		for(node=table[i]; node; node=node->next)
-			if(node->type ==  SYMBOL_IDENTIFIER) //ERRO esta aqui ainda não revisei
+			if(node->type ==  SYMBOL_IDENTIFIER){
 				fprintf (stderr,"Semantic ERROR: identifier %s, not declared \n",node->text);
+				addErrorFlag();
+			}
 }
 
 void semanticCheckUsage(AST* node){
@@ -85,6 +91,7 @@ void semanticCheckUsage(AST* node){
     if(node->type == AST_ATRIB){
       if(node->symbol->type != SYMBOL_VAR){
         fprintf(stderr, "Semantic ERROR: identifier %s must be a variable\n", node->symbol->text);
+        addErrorFlag();
       }
     }
     
@@ -92,6 +99,7 @@ void semanticCheckUsage(AST* node){
     if(node->type == AST_VEC_ATRIB){
       if(node->symbol->type != SYMBOL_VEC){
         fprintf(stderr, "Semantic ERROR: identifier %s must be a vector\n", node->symbol->text);
+        addErrorFlag();
       }
     }
   	
@@ -99,12 +107,14 @@ void semanticCheckUsage(AST* node){
     if(node->type == AST_ARRAY_POS){
       if(node->symbol->type != SYMBOL_VEC){
         fprintf(stderr, "Semantic ERROR: identifier %s must be a vector\n", node->symbol->text);
+        addErrorFlag();
       }
     }
     //check if functions calls are calling functions
     if(node->type == AST_FUNC_CALL){
       if(node->symbol->type != SYMBOL_FUNC){
         fprintf(stderr, "Semantic ERROR: identifier %s must be a function\n", node->symbol->text);
+        addErrorFlag();
       }
     }
     int i;
@@ -114,29 +124,59 @@ void semanticCheckUsage(AST* node){
 }
 
 void semanticCheckOperands(AST* node){
-  /*if(!node) return;
+  if(!node) return;
   //process this node
 
   //check operands of arithmetical operators
-  if(node->type == AST_ADD || node->type == AST_MUL){
-    //check first operands
-    if(node->son[0]->type == AST_GREAT){ //adicionar outros operadores logicos, no programa do johann só tinha >
-      fprintf(stderr, "Semantic ERROR: left operand of cannot be >\n");
-			exit(4);
+  if(node->type == AST_ADD || node->type == AST_SUB || node->type == AST_MUL || node->type == AST_DIV){
+  	int sons0 = node->sons[0]->type;
+  	int sons1 = node->sons[1]->type;
+  	
+  	//check first operands
+    if(sons0 == AST_LESS || sons0 == AST_GREAT || sons0 == AST_NEG || sons0 == AST_LE || sons0 == AST_GE || sons0 == AST_EQ || sons0 == AST_NE || sons0 == AST_AND || sons0 == AST_OR){
+		fprintf(stderr, "Semantic ERROR: the left operand of cannot be  logical (<, >, !, <=, >=, ==, !=, &&, ||)\n");
+		addErrorFlag();
     }
     //check second operand
-    if(node->son[1]->type == AST_GREAT){
-      fprintf(stderr, "Semantic ERROR: left operand of cannot be >\n");
-			exit(4);
+    if(sons1 == AST_LESS || sons1 == AST_GREAT || sons1 == AST_NEG || sons1 == AST_LE || sons1 == AST_GE || sons1 == AST_EQ || sons1 == AST_NE || sons1 == AST_AND || sons1 == AST_OR){
+		fprintf(stderr, "Semantic ERROR: the right operand of cannot be logical (<, >, !, <=, >=, ==, !=, &&, ||)\n");
+		addErrorFlag();
     }
   }
   //check operands of logical operators
-
+  if(node->type == AST_LESS || node->type == AST_GREAT || node->type == AST_NEG || node->type == AST_LE || node->type == AST_GE || node->type == AST_EQ || node->type == AST_NE || node->type == AST_AND || node->type == AST_OR){
+  	int sons0 = node->sons[0]->type;
+  	int sons1 = node->sons[1]->type;
+  	
+  	//check first operands
+    if(sons0 == AST_ADD || sons0 == AST_SUB || sons0 == AST_MUL || sons0 == AST_DIV){
+		fprintf(stderr, "Semantic ERROR: the left operand of cannot be arithmetical (+, -, *, /)\n");
+		addErrorFlag();
+    }
+    //check second operand
+    if(sons1 == AST_ADD || sons1 == AST_SUB || sons1 == AST_MUL || sons1 == AST_DIV){
+		fprintf(stderr, "Semantic ERROR: the right operand of cannot be arithmetical (+, -, *, /)\n");
+		addErrorFlag();
+    }
+  }
   //check assigment (real to real, int to int)
 
   int i;
-  for(i=0; i<MAX_SONS; i++){ //é melhor colocar a recursão no inicio ao invés de aqui
-    semanticCheckUsage(node->son[i]);
+  for(i=0; i<MAX_SONS; i++){ 
+    semanticCheckOperands(node->sons[i]);
   }/**/
 }
+
+void initErrorFlag(void){
+	errorFlag = 0;
+}
+	
+int getErrorFlag(void){
+	return errorFlag;
+}
+	
+void addErrorFlag(void){
+	errorFlag++;
+}
+
 #endif

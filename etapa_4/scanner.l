@@ -5,7 +5,7 @@
 
 	int lineNumber = 1;
 	int running = 1;
-
+	extern void initErrorFlag(void);
 %}
 
 %x COMMENT
@@ -65,6 +65,7 @@ int getLineNumber()
 void initMe()
 {
 	running = 1;
+	initErrorFlag();
 	hashInit();
 }
    

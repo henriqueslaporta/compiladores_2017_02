@@ -28,5 +28,7 @@ while (voidfunc(d + 1, H, oi))
 	i=2;
 a=i[1];
 i[1]= a;
+mat=2;
+a=2 + 3 > 1;
 
 }
