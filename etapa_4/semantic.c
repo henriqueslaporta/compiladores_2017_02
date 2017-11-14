@@ -134,12 +134,12 @@ void semanticCheckOperands(AST* node){
   	
   	//check first operands
     if(sons0 == AST_LESS || sons0 == AST_GREAT || sons0 == AST_NEG || sons0 == AST_LE || sons0 == AST_GE || sons0 == AST_EQ || sons0 == AST_NE || sons0 == AST_AND || sons0 == AST_OR){
-		fprintf(stderr, "Semantic ERROR: the left operand of cannot be  logical (<, >, !, <=, >=, ==, !=, &&, ||)\n");
+		fprintf(stderr, "Semantic ERROR: the left operand cannot be  logical (<, >, !, <=, >=, ==, !=, &&, ||)\n");
 		addErrorFlag();
     }
     //check second operand
     if(sons1 == AST_LESS || sons1 == AST_GREAT || sons1 == AST_NEG || sons1 == AST_LE || sons1 == AST_GE || sons1 == AST_EQ || sons1 == AST_NE || sons1 == AST_AND || sons1 == AST_OR){
-		fprintf(stderr, "Semantic ERROR: the right operand of cannot be logical (<, >, !, <=, >=, ==, !=, &&, ||)\n");
+		fprintf(stderr, "Semantic ERROR: the right operand cannot be logical (<, >, !, <=, >=, ==, !=, &&, ||)\n");
 		addErrorFlag();
     }
   }
@@ -150,21 +150,41 @@ void semanticCheckOperands(AST* node){
   	
   	//check first operands
     if(sons0 == AST_ADD || sons0 == AST_SUB || sons0 == AST_MUL || sons0 == AST_DIV){
-		fprintf(stderr, "Semantic ERROR: the left operand of cannot be arithmetical (+, -, *, /)\n");
+		fprintf(stderr, "Semantic ERROR: the left operand cannot be arithmetical (+, -, *, /)\n");
 		addErrorFlag();
     }
     //check second operand
     if(sons1 == AST_ADD || sons1 == AST_SUB || sons1 == AST_MUL || sons1 == AST_DIV){
-		fprintf(stderr, "Semantic ERROR: the right operand of cannot be arithmetical (+, -, *, /)\n");
+		fprintf(stderr, "Semantic ERROR: the right operand cannot be arithmetical (+, -, *, /)\n");
 		addErrorFlag();
     }
   }
-  //check assigment (real to real, int to int)
 
   int i;
   for(i=0; i<MAX_SONS; i++){ 
     semanticCheckOperands(node->sons[i]);
   }/**/
+}
+
+void semanticCheckVectorIndex(AST* node){
+  if(!node) return;
+  //process this node
+  	int i;
+  	
+  	//check if variables calls are calling variables
+    if(node->type == AST_ARRAY_POS){
+      int sons0 = node->sons[0]->type;
+      if(sons0 == AST_LESS || sons0 == AST_GREAT || sons0 == AST_NEG || sons0 == AST_LE || sons0 == AST_GE || sons0 == AST_EQ || sons0 == AST_NE || sons0 == AST_AND || sons0 == AST_OR){
+		fprintf(stderr, "Semantic ERROR: the vector index need to be a INT\n");
+		addErrorFlag();
+      }
+      for(i=0; i<MAX_SONS; i++){
+      semanticCheckVectorIndex(node->sons[i]);
+      }/**/
+    }
+    for(i=0; i<MAX_SONS; i++){
+      semanticCheckVectorIndex(node->sons[i]);
+    }/**/
 }
 
 void initErrorFlag(void){

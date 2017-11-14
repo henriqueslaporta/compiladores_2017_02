@@ -12,6 +12,7 @@ void semanticSetTypes(AST* node);
 void semanticCheckUndeclared(void);
 void semanticCheckUsage(AST* node);
 void semanticCheckOperands(AST* node);
+void semanticCheckVectorIndex(AST* node);
 void initErrorFlag(void);
 int getErrorFlag(void);
 void addErrorFlag(void);

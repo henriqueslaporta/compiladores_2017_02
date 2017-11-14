@@ -80,6 +80,7 @@ program : decl				{
   	semanticCheckUndeclared();
   	semanticCheckUsage($1);
   	semanticCheckOperands($1);
+  	semanticCheckVectorIndex($1);
 	} //chamar todas as funçoes de check aqui
 
 decl : dec decl				{ $$ = astCreate(AST_DECLARATION,0,$1,$2,0,0); }
