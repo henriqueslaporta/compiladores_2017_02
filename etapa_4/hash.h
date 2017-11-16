@@ -1,6 +1,7 @@
 #ifndef HASH_HEADER
 #define HASH_HEADER
 
+
 #define SYMBOL_LITINT 1   //isso ta aqui pq o do johann ta assim
 #define SYMBOL_ID 2				//acho que tem que tirar isso pq vai ser usado os definidos no parser.y
 
@@ -33,7 +34,6 @@ void hashPrint();
 int hashAddress(char *text);
 HASH_NODE *hashInsert (char *text, int type);
 HASH_NODE *hashFind (char *text);
-void hashCheckUndeclared();
 
 void initMe();
 int getLineNumber();

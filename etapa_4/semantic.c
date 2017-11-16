@@ -64,7 +64,7 @@ void semanticSetTypes(AST* node){
       if(node->sons[0]->sons[0]->type == AST_KW_DOUBLE) node->sons[0]->symbol->datatype = DATATYPE_DOUBLE;
     }
   }
-  
+
 
   int i;
   for(i=0; i<MAX_SONS; i++){
@@ -86,7 +86,7 @@ void semanticCheckUndeclared(void){
 void semanticCheckUsage(AST* node){
   if(!node) return;
   //process this node
-  	
+
   	//check if variables calls are calling variables
     if(node->type == AST_ATRIB){
       if(node->symbol->type != SYMBOL_VAR){
@@ -94,7 +94,7 @@ void semanticCheckUsage(AST* node){
         addErrorFlag();
       }
     }
-    
+
     //check if vectors calls are calling vectors
     if(node->type == AST_VEC_ATRIB){
       if(node->symbol->type != SYMBOL_VEC){
@@ -102,7 +102,7 @@ void semanticCheckUsage(AST* node){
         addErrorFlag();
       }
     }
-  	
+
     //check if vectors calls are calling vectors
     if(node->type == AST_ARRAY_POS){
       if(node->symbol->type != SYMBOL_VEC){
@@ -123,7 +123,7 @@ void semanticCheckUsage(AST* node){
     }/**/
 }
 
-void semanticCheckOperands(AST* node){
+void semanticCheckOperands(AST* node){ //OPERANDOS DE OPERADORES LÓGICOS PODEM SER ARITIMETICOS
   if(!node) return;
   //process this node
 
@@ -131,7 +131,7 @@ void semanticCheckOperands(AST* node){
   if(node->type == AST_ADD || node->type == AST_SUB || node->type == AST_MUL || node->type == AST_DIV){
   	int sons0 = node->sons[0]->type;
   	int sons1 = node->sons[1]->type;
-  	
+
   	//check first operands
     if(sons0 == AST_LESS || sons0 == AST_GREAT || sons0 == AST_NEG || sons0 == AST_LE || sons0 == AST_GE || sons0 == AST_EQ || sons0 == AST_NE || sons0 == AST_AND || sons0 == AST_OR){
 		fprintf(stderr, "Semantic ERROR: the left operand cannot be  logical (<, >, !, <=, >=, ==, !=, &&, ||)\n");
@@ -147,7 +147,7 @@ void semanticCheckOperands(AST* node){
   if(node->type == AST_LESS || node->type == AST_GREAT || node->type == AST_NEG || node->type == AST_LE || node->type == AST_GE || node->type == AST_EQ || node->type == AST_NE || node->type == AST_AND || node->type == AST_OR){
   	int sons0 = node->sons[0]->type;
   	int sons1 = node->sons[1]->type;
-  	
+
   	//check first operands
     if(sons0 == AST_ADD || sons0 == AST_SUB || sons0 == AST_MUL || sons0 == AST_DIV){
 		fprintf(stderr, "Semantic ERROR: the left operand cannot be arithmetical (+, -, *, /)\n");
@@ -161,16 +161,16 @@ void semanticCheckOperands(AST* node){
   }
 
   int i;
-  for(i=0; i<MAX_SONS; i++){ 
+  for(i=0; i<MAX_SONS; i++){
     semanticCheckOperands(node->sons[i]);
   }/**/
 }
 
-void semanticCheckVectorIndex(AST* node){
+void semanticCheckVectorIndex(AST* node){ //TESTAR SE É FLOAT TAMBÉM
   if(!node) return;
   //process this node
   	int i;
-  	
+
   	//check if variables calls are calling variables
     if(node->type == AST_ARRAY_POS){
       int sons0 = node->sons[0]->type;
@@ -187,14 +187,52 @@ void semanticCheckVectorIndex(AST* node){
     }/**/
 }
 
+void semanticCheckReturnType(AST* node){
+  if(!node) return;
+
+  if(node->type == AST_FUNC_DEC){
+    semanticCheckReturnType(node->sons[3]);
+    return;
+  }
+  if(node->type == AST_KW_RETURN){
+    if(isNodeReal(node->sons[0]) == false){
+      fprintf(stderr, "Semantic ERROR: invalid return type\n");
+  		addErrorFlag();
+      return;
+    }
+  }
+
+  for(int i=0; i<MAX_SONS; i++){
+    semanticCheckReturnType(node->sons[i]);
+  }/**/
+}
+
+bool isNodeReal(AST *node){
+  if(!node) return false;
+
+  //variables, access to array and function calls are all real values
+  if(node->type == AST_SYMBOL || node->type == AST_ARRAY_POS || node->type == AST_FUNC_CALL)
+    return true;
+  //logical operations do not return real values
+  if(node->type == AST_LESS || node->type == AST_GREAT || node->type == AST_NEG || node->type == AST_LE || node->type == AST_GE || node->type == AST_EQ || node->type == AST_NE || node->type == AST_AND || node->type == AST_OR)
+    return false;
+  //arithmetical operations must be checked
+  if(node->type == AST_ADD || node->type == AST_SUB || node->type == AST_MUL || node->type == AST_DIV)
+    return isNodeReal(node->sons[0]) && isNodeReal(node->sons[1]);
+  //expressions between parentesis must be checked
+  if(node->type == AST_EXP_P)
+    isNodeReal(node->sons[0]);
+
+}
+
 void initErrorFlag(void){
 	errorFlag = 0;
 }
-	
+
 int getErrorFlag(void){
 	return errorFlag;
 }
-	
+
 void addErrorFlag(void){
 	errorFlag++;
 }
