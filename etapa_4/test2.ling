@@ -23,7 +23,7 @@ d: byte = 65;
 	a = mat[1+1>2];
 	a = 2 + 3 > 1 ;
 
-	return (voidfunc2() && a);
+	return (voidfunc2(a) * mat[1] + a/2);
 }
 
 

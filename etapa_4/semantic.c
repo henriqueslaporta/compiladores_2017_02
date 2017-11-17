@@ -42,6 +42,7 @@ void semanticSetTypes(AST* node){
     }
     else{
       node->symbol->type = SYMBOL_FUNC;
+	  addFunction(node->symbol);
       if(node->sons[0]->type == AST_KW_BYTE) node->symbol->datatype = DATATYPE_BYTE;
       if(node->sons[0]->type == AST_KW_SHORT) node->symbol->datatype = DATATYPE_SHORT;
       if(node->sons[0]->type == AST_KW_LONG) node->symbol->datatype = DATATYPE_LONG;
@@ -62,6 +63,8 @@ void semanticSetTypes(AST* node){
       if(node->sons[0]->sons[0]->type == AST_KW_LONG) node->sons[0]->symbol->datatype = DATATYPE_LONG;
       if(node->sons[0]->sons[0]->type == AST_KW_FLOAT) node->sons[0]->symbol->datatype = DATATYPE_FLOAT;
       if(node->sons[0]->sons[0]->type == AST_KW_DOUBLE) node->sons[0]->symbol->datatype = DATATYPE_DOUBLE;
+	  func_list.last->numParam ++;
+	  func_list.last->paramType[func_list.last->numParam - 1] = node->sons[0]->symbol->datatype;
     }
   }
 
@@ -116,7 +119,9 @@ void semanticCheckUsage(AST* node){
         fprintf(stderr, "Semantic ERROR: identifier %s must be a function\n", node->symbol->text);
         addErrorFlag();
       }
-    }
+	  semanticCheckFuncParam(node->sons[0], node->symbol->text);
+    }	
+	
     int i;
     for(i=0; i<MAX_SONS; i++){
       semanticCheckUsage(node->sons[i]);
@@ -207,6 +212,34 @@ void semanticCheckReturnType(AST* node){
   }/**/
 }
 
+void semanticCheckFuncParam(AST* node, char* function_name){
+	AST* current_node;
+	current_node = node;
+	int param_count = 0;
+
+	FUNC_DATA_NODE* func_data;
+	func_data = findFunction(function_name);
+	int numParam = func_data->numParam;
+
+	while(current_node!=NULL && param_count<=numParam){
+			if(isNodeReal(current_node->sons[0]) == false){
+				fprintf(stderr, "Semantic ERROR: invalid function parameter type (parameter %i)\n", param_count + 1);
+  				addErrorFlag();
+			}
+
+			param_count++;
+			current_node = current_node->sons[1];				
+	}
+	if(param_count > numParam){
+		fprintf(stderr, "Semantic ERROR: too many arguments\n");
+  		addErrorFlag();	
+	}
+	if(param_count < numParam){
+		fprintf(stderr, "Semantic ERROR: missing arguments\n");
+  		addErrorFlag();	
+	}
+}
+
 bool isNodeReal(AST *node){
   if(!node) return false;
 
@@ -236,5 +269,36 @@ int getErrorFlag(void){
 void addErrorFlag(void){
 	errorFlag++;
 }
+
+void addFunction(HASH_NODE* function){
+	FUNC_DATA_NODE* newNode;
+	newNode = (FUNC_DATA_NODE*) calloc(1, sizeof(FUNC_DATA_NODE));
+	newNode->function = function;
+	newNode->numParam = 0;
+	newNode->next = NULL;	
+	
+	if(func_list.first == NULL){
+		func_list.first = newNode;
+		func_list.last = newNode;
+	}
+	else{
+		func_list.last->next = newNode;
+		func_list.last = newNode;
+	}
+} 
+
+FUNC_DATA_NODE* findFunction(char* function_name){
+	FUNC_DATA_NODE* current_func = func_list.first;
+	
+	do{
+		if(strcmp(current_func->function->text, function_name))
+			return current_func;
+		else
+			current_func = current_func->next;
+	}while(current_func != NULL);
+
+	return NULL;
+}
+
 
 #endif
