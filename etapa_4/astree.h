@@ -68,6 +68,7 @@ FILE* outputfile;
 typedef struct ast_node{
   int type;
   HASH_NODE *symbol;
+  int line;
   struct ast_node* sons[MAX_SONS];
 }AST;
 

@@ -9,7 +9,7 @@ void semanticSetTypes(AST* node){
   //process this node
   if(node->type == AST_VAR_DEC){
     if(node->symbol->type != SYMBOL_IDENTIFIER){
-      fprintf(stderr, "semantic error: identifier %s, already declared \n", node->symbol->text);
+      fprintf(stderr, "Semantic ERROR Line %d: identifier %s, already declared \n",node->line, node->symbol->text);
       addErrorFlag();
     }
     else{
@@ -23,7 +23,7 @@ void semanticSetTypes(AST* node){
   }
   if(node->type == AST_VECTOR_DEC){
     if(node->symbol->type != SYMBOL_IDENTIFIER){
-      fprintf(stderr, "semantic error: identifier %s, already declared \n", node->symbol->text);
+      fprintf(stderr, "Semantic ERROR Line %d: identifier %s, already declared \n", node->line, node->symbol->text);
       addErrorFlag();
     }
     else{
@@ -37,7 +37,7 @@ void semanticSetTypes(AST* node){
   }
   if(node->type == AST_FUNC_DEC){
     if(node->symbol->type != SYMBOL_IDENTIFIER){
-      fprintf(stderr, "Semantic ERROR: identifier %s, already declared \n", node->symbol->text);
+      fprintf(stderr, "Semantic ERROR Line %d: identifier %s, already declared \n", node->line, node->symbol->text);
       addErrorFlag();
     }
     else{
@@ -53,7 +53,7 @@ void semanticSetTypes(AST* node){
   //Para declaração dos argumentos das funções como variaveis válidas
   if(node->type == AST_FUNC_ARGL || node->type == AST_FUNC_ARG){
     if(node->sons[0]->symbol->type != SYMBOL_IDENTIFIER){
-      fprintf(stderr, "Semantic ERROR: identifier %s, already declared \n", node->sons[0]->symbol->text);
+      fprintf(stderr, "Semantic ERROR Line %d: identifier %s, already declared \n", node->line, node->sons[0]->symbol->text);
       addErrorFlag();
     }
     else{
@@ -81,7 +81,7 @@ void semanticCheckUndeclared(void){
 	for(i=0; i<HASH_SIZE; i++)
 		for(node=table[i]; node; node=node->next)
 			if(node->type ==  SYMBOL_IDENTIFIER){
-				fprintf (stderr,"Semantic ERROR: identifier %s, not declared \n",node->text);
+				fprintf (stderr,"Semantic ERROR Line %d: identifier %s, not declared \n",node->line, node->text);
 				addErrorFlag();
 			}
 }
@@ -93,7 +93,7 @@ void semanticCheckUsage(AST* node){
   	//check if variables calls are calling variables
     if(node->type == AST_ATRIB){
       if(node->symbol->type != SYMBOL_VAR){
-        fprintf(stderr, "Semantic ERROR: identifier %s must be a variable\n", node->symbol->text);
+        fprintf(stderr, "Semantic ERROR Line %d: identifier %s must be a variable\n", node->line, node->symbol->text);
         addErrorFlag();
       }
     }
@@ -101,7 +101,7 @@ void semanticCheckUsage(AST* node){
     //check if vectors calls are calling vectors
     if(node->type == AST_VEC_ATRIB){
       if(node->symbol->type != SYMBOL_VEC){
-        fprintf(stderr, "Semantic ERROR: identifier %s must be a vector\n", node->symbol->text);
+        fprintf(stderr, "Semantic ERROR Line %d: identifier %s must be a vector\n",node->line, node->symbol->text);
         addErrorFlag();
       }
     }
@@ -109,7 +109,7 @@ void semanticCheckUsage(AST* node){
     //check if vectors calls are calling vectors and if it's index is valid
     if(node->type == AST_ARRAY_POS){
       if(node->symbol->type != SYMBOL_VEC){
-        fprintf(stderr, "Semantic ERROR: identifier %s must be a vector\n", node->symbol->text);
+        fprintf(stderr, "Semantic ERROR Line %d: identifier %s must be a vector\n",  node->line, node->symbol->text);
         addErrorFlag();
       }
       else semanticCheckVectorIndex(node);
@@ -118,10 +118,10 @@ void semanticCheckUsage(AST* node){
     //check if functions calls are calling functions and if it's arguments are valid
     if(node->type == AST_FUNC_CALL){
       if(node->symbol->type != SYMBOL_FUNC){
-        fprintf(stderr, "Semantic ERROR: identifier %s must be a function\n", node->symbol->text);
+        fprintf(stderr, "Semantic ERROR Line %d: identifier %s must be a function\n",  node->line, node->symbol->text);
         addErrorFlag();
       }
-      else semanticCheckFuncParam(node->sons[0], node->symbol->text);
+      else semanticCheckFuncParam(node->sons[0], node->symbol->text, node->line);
     }
 
     int i;
@@ -141,12 +141,12 @@ void semanticCheckOperands(AST* node){ //OPERANDOS DE OPERADORES LÓGICOS PODEM 
 
   	//check first operands
     if(sons0 == AST_LESS || sons0 == AST_GREAT || sons0 == AST_NEG || sons0 == AST_LE || sons0 == AST_GE || sons0 == AST_EQ || sons0 == AST_NE || sons0 == AST_AND || sons0 == AST_OR){
-		fprintf(stderr, "Semantic ERROR: the left operand cannot be  logical (<, >, !, <=, >=, ==, !=, &&, ||)\n");
+		fprintf(stderr, "Semantic ERROR Line %d: the left operand cannot be  logical (<, >, !, <=, >=, ==, !=, &&, ||)\n", node->line);
 		addErrorFlag();
     }
     //check second operand
     if(sons1 == AST_LESS || sons1 == AST_GREAT || sons1 == AST_NEG || sons1 == AST_LE || sons1 == AST_GE || sons1 == AST_EQ || sons1 == AST_NE || sons1 == AST_AND || sons1 == AST_OR){
-		fprintf(stderr, "Semantic ERROR: the right operand cannot be logical (<, >, !, <=, >=, ==, !=, &&, ||)\n");
+		fprintf(stderr, "Semantic ERROR Line %d: the right operand cannot be logical (<, >, !, <=, >=, ==, !=, &&, ||)\n", node->line);
 		addErrorFlag();
     }
   }
@@ -157,12 +157,12 @@ void semanticCheckOperands(AST* node){ //OPERANDOS DE OPERADORES LÓGICOS PODEM 
 
   	//check first operands
     if(sons0 == AST_ADD || sons0 == AST_SUB || sons0 == AST_MUL || sons0 == AST_DIV){
-		fprintf(stderr, "Semantic ERROR: the left operand cannot be arithmetical (+, -, *, /)\n");
+		fprintf(stderr, "Semantic ERROR Line %d: the left operand cannot be arithmetical (+, -, *, /)\n", node->line);
 		addErrorFlag();
     }
     //check second operand
     if(sons1 == AST_ADD || sons1 == AST_SUB || sons1 == AST_MUL || sons1 == AST_DIV){
-		fprintf(stderr, "Semantic ERROR: the right operand cannot be arithmetical (+, -, *, /)\n");
+		fprintf(stderr, "Semantic ERROR Line %d: the right operand cannot be arithmetical (+, -, *, /)\n", node->line);
 		addErrorFlag();
     }
   }
@@ -176,7 +176,7 @@ void semanticCheckOperands(AST* node){ //OPERANDOS DE OPERADORES LÓGICOS PODEM 
 void semanticCheckVectorIndex(AST* node){
 
   if(isNodeInt(node->sons[0]) == false){
-    fprintf(stderr, "Semantic ERROR: the vector index must be an integer value\n");
+    fprintf(stderr, "Semantic ERROR Line %d: the vector index must be an integer value\n", node->line);
     addErrorFlag();
   }
   /**/
@@ -193,7 +193,7 @@ void semanticCheckReturnType(AST* node){
     //check the type of the expression that is being returned
     //in our case, the defined types are interchangeable
     if(isNodeReal(node->sons[0]) == false){
-      fprintf(stderr, "Semantic ERROR: invalid return type\n");
+      fprintf(stderr, "Semantic ERROR Line %d: invalid return type\n", node->line);
   		addErrorFlag();
       return;
     }
@@ -204,7 +204,7 @@ void semanticCheckReturnType(AST* node){
   }/**/
 }
 
-void semanticCheckFuncParam(AST* node, char* function_name){
+void semanticCheckFuncParam(AST* node, char* function_name, int line){
 	AST* current_node;
 	current_node = node;
 	int param_count = 0;
@@ -219,18 +219,18 @@ void semanticCheckFuncParam(AST* node, char* function_name){
       //check the parameter's type
       //in our case, the defined types are interchangeable
 			if(isNodeReal(current_node->sons[0]) == false){
-				fprintf(stderr, "Semantic ERROR: invalid function parameter type (parameter %i)\n", param_count + 1);
+				fprintf(stderr, "Semantic ERROR Line %d: invalid function parameter type (parameter %i)\n",line, param_count + 1);
   			addErrorFlag();
 			}
 			param_count++;
 			current_node = current_node->sons[1];
 	}
 	if(param_count > numParam){
-		fprintf(stderr, "Semantic ERROR: too many arguments at %s\n", function_name);
+		fprintf(stderr, "Semantic ERROR Line %d: too many arguments at %s\n", line, function_name);
   		addErrorFlag();
 	}
 	if(param_count < numParam){
-		fprintf(stderr, "Semantic ERROR: missing arguments at %s\n", function_name);
+		fprintf(stderr, "Semantic ERROR Line %d: missing arguments at %s\n", line, function_name);
   		addErrorFlag();
 	}/**/
 }

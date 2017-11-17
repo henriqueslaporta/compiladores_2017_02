@@ -36,7 +36,7 @@ void semanticCheckUsage(AST* node);
 void semanticCheckOperands(AST* node);
 void semanticCheckVectorIndex(AST* node);
 void semanticCheckReturnType(AST* node);
-void semanticCheckFuncParam(AST* node, char* function_name);
+void semanticCheckFuncParam(AST* node, char* function_name, int line);
 bool isNodeReal(AST *node);
 bool isNodeInt(AST *node);
 void initErrorFlag(void);

@@ -55,6 +55,7 @@ HASH_NODE *hashInsert (char *text, int type)
 	newnode->type = type;
 	newnode->datatype = 0;
 	newnode->next = table[address];
+	newnode->line = getLineNumber();
 	table[address] = newnode;
 	return newnode;
 }
