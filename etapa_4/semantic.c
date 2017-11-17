@@ -42,7 +42,7 @@ void semanticSetTypes(AST* node){
     }
     else{
       node->symbol->type = SYMBOL_FUNC;
-	  addFunction(node->symbol);
+	    addFunction(node->symbol);
       if(node->sons[0]->type == AST_KW_BYTE) node->symbol->datatype = DATATYPE_BYTE;
       if(node->sons[0]->type == AST_KW_SHORT) node->symbol->datatype = DATATYPE_SHORT;
       if(node->sons[0]->type == AST_KW_LONG) node->symbol->datatype = DATATYPE_LONG;
@@ -63,8 +63,8 @@ void semanticSetTypes(AST* node){
       if(node->sons[0]->sons[0]->type == AST_KW_LONG) node->sons[0]->symbol->datatype = DATATYPE_LONG;
       if(node->sons[0]->sons[0]->type == AST_KW_FLOAT) node->sons[0]->symbol->datatype = DATATYPE_FLOAT;
       if(node->sons[0]->sons[0]->type == AST_KW_DOUBLE) node->sons[0]->symbol->datatype = DATATYPE_DOUBLE;
-	  func_list.last->numParam ++;
-	  func_list.last->paramType[func_list.last->numParam - 1] = node->sons[0]->symbol->datatype;
+	    func_list.last->numParam ++;
+	    func_list.last->paramType[func_list.last->numParam - 1] = node->sons[0]->symbol->datatype;
     }
   }
 
@@ -106,22 +106,24 @@ void semanticCheckUsage(AST* node){
       }
     }
 
-    //check if vectors calls are calling vectors
+    //check if vectors calls are calling vectors and if it's index is valid
     if(node->type == AST_ARRAY_POS){
       if(node->symbol->type != SYMBOL_VEC){
         fprintf(stderr, "Semantic ERROR: identifier %s must be a vector\n", node->symbol->text);
         addErrorFlag();
       }
+      else semanticCheckVectorIndex(node);
     }
-    //check if functions calls are calling functions
+
+    //check if functions calls are calling functions and if it's arguments are valid
     if(node->type == AST_FUNC_CALL){
       if(node->symbol->type != SYMBOL_FUNC){
         fprintf(stderr, "Semantic ERROR: identifier %s must be a function\n", node->symbol->text);
         addErrorFlag();
       }
-	  semanticCheckFuncParam(node->sons[0], node->symbol->text);
-    }	
-	
+      else semanticCheckFuncParam(node->sons[0], node->symbol->text);
+    }
+
     int i;
     for(i=0; i<MAX_SONS; i++){
       semanticCheckUsage(node->sons[i]);
@@ -171,25 +173,13 @@ void semanticCheckOperands(AST* node){ //OPERANDOS DE OPERADORES LÓGICOS PODEM 
   }/**/
 }
 
-void semanticCheckVectorIndex(AST* node){ //TESTAR SE É FLOAT TAMBÉM
-  if(!node) return;
-  //process this node
-  	int i;
+void semanticCheckVectorIndex(AST* node){
 
-  	//check if variables calls are calling variables
-    if(node->type == AST_ARRAY_POS){
-      int sons0 = node->sons[0]->type;
-      if(sons0 == AST_LESS || sons0 == AST_GREAT || sons0 == AST_NEG || sons0 == AST_LE || sons0 == AST_GE || sons0 == AST_EQ || sons0 == AST_NE || sons0 == AST_AND || sons0 == AST_OR){
-		fprintf(stderr, "Semantic ERROR: the vector index need to be a INT\n");
-		addErrorFlag();
-      }
-      for(i=0; i<MAX_SONS; i++){
-      semanticCheckVectorIndex(node->sons[i]);
-      }/**/
-    }
-    for(i=0; i<MAX_SONS; i++){
-      semanticCheckVectorIndex(node->sons[i]);
-    }/**/
+  if(isNodeInt(node->sons[0]) == false){
+    fprintf(stderr, "Semantic ERROR: the vector index must be an integer value\n");
+    addErrorFlag();
+  }
+  /**/
 }
 
 void semanticCheckReturnType(AST* node){
@@ -200,6 +190,8 @@ void semanticCheckReturnType(AST* node){
     return;
   }
   if(node->type == AST_KW_RETURN){
+    //check the type of the expression that is being returned
+    //in our case, the defined types are interchangeable
     if(isNodeReal(node->sons[0]) == false){
       fprintf(stderr, "Semantic ERROR: invalid return type\n");
   		addErrorFlag();
@@ -219,31 +211,34 @@ void semanticCheckFuncParam(AST* node, char* function_name){
 
 	FUNC_DATA_NODE* func_data;
 	func_data = findFunction(function_name);
+  if(func_data == NULL) return;
+
 	int numParam = func_data->numParam;
 
 	while(current_node!=NULL && param_count<=numParam){
+      //check the parameter's type
+      //in our case, the defined types are interchangeable
 			if(isNodeReal(current_node->sons[0]) == false){
 				fprintf(stderr, "Semantic ERROR: invalid function parameter type (parameter %i)\n", param_count + 1);
-  				addErrorFlag();
+  			addErrorFlag();
 			}
-
 			param_count++;
-			current_node = current_node->sons[1];				
+			current_node = current_node->sons[1];
 	}
 	if(param_count > numParam){
-		fprintf(stderr, "Semantic ERROR: too many arguments\n");
-  		addErrorFlag();	
+		fprintf(stderr, "Semantic ERROR: too many arguments at %s\n", function_name);
+  		addErrorFlag();
 	}
 	if(param_count < numParam){
-		fprintf(stderr, "Semantic ERROR: missing arguments\n");
-  		addErrorFlag();	
-	}
+		fprintf(stderr, "Semantic ERROR: missing arguments at %s\n", function_name);
+  		addErrorFlag();
+	}/**/
 }
 
 bool isNodeReal(AST *node){
   if(!node) return false;
 
-  //variables, access to array and function calls are all real values
+  //literals, variables, access to array and function calls are all real values
   if(node->type == AST_SYMBOL || node->type == AST_ARRAY_POS || node->type == AST_FUNC_CALL)
     return true;
   //logical operations do not return real values
@@ -255,7 +250,26 @@ bool isNodeReal(AST *node){
   //expressions between parentesis must be checked
   if(node->type == AST_EXP_P)
     isNodeReal(node->sons[0]);
+}
 
+bool isNodeInt(AST *node){
+  if(!node) return false;
+
+  //literas, variables, access to array and function can be float or integer
+  if(node->type == AST_SYMBOL || node->type == AST_ARRAY_POS || node->type == AST_FUNC_CALL)
+    if(node->symbol->datatype == DATATYPE_BYTE || node->symbol->datatype == DATATYPE_SHORT || node->symbol->datatype == DATATYPE_LONG || node->symbol->type == SYMBOL_LIT_INT || node->symbol->type == SYMBOL_LIT_CHAR)
+      return true;
+    else
+      return false;
+  //logical operations do not return integer values
+  if(node->type == AST_LESS || node->type == AST_GREAT || node->type == AST_NEG || node->type == AST_LE || node->type == AST_GE || node->type == AST_EQ || node->type == AST_NE || node->type == AST_AND || node->type == AST_OR)
+    return false;
+  //arithmetical operations must be checked
+  if(node->type == AST_ADD || node->type == AST_SUB || node->type == AST_MUL || node->type == AST_DIV)
+    return isNodeInt(node->sons[0]) && isNodeInt(node->sons[1]);
+  //expressions between parentesis must be checked
+  if(node->type == AST_EXP_P)
+    isNodeInt(node->sons[0]);
 }
 
 void initErrorFlag(void){
@@ -275,8 +289,8 @@ void addFunction(HASH_NODE* function){
 	newNode = (FUNC_DATA_NODE*) calloc(1, sizeof(FUNC_DATA_NODE));
 	newNode->function = function;
 	newNode->numParam = 0;
-	newNode->next = NULL;	
-	
+	newNode->next = NULL;
+
 	if(func_list.first == NULL){
 		func_list.first = newNode;
 		func_list.last = newNode;
@@ -285,19 +299,19 @@ void addFunction(HASH_NODE* function){
 		func_list.last->next = newNode;
 		func_list.last = newNode;
 	}
-} 
+}
 
 FUNC_DATA_NODE* findFunction(char* function_name){
 	FUNC_DATA_NODE* current_func = func_list.first;
-	
-	do{
-		if(strcmp(current_func->function->text, function_name))
-			return current_func;
+  bool found = false;
+
+	while(current_func != NULL && found == false){
+		if(strcmp(current_func->function->text, function_name) == 0)
+			found = true;
 		else
 			current_func = current_func->next;
-	}while(current_func != NULL);
-
-	return NULL;
+	}
+  return current_func;
 }
 
 

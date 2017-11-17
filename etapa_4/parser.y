@@ -80,7 +80,6 @@ program : decl				{
   	semanticCheckUndeclared();
   	semanticCheckUsage($1);
   	semanticCheckOperands($1);
-  	semanticCheckVectorIndex($1);
 		semanticCheckReturnType($1);
 	} //chamar todas as funçoes de check aqui
 
