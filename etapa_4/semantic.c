@@ -96,6 +96,17 @@ void semanticCheckUsage(AST* node){
         fprintf(stderr, "Semantic ERROR Line %d: identifier %s must be a variable\n", node->line, node->symbol->text);
         addErrorFlag();
       }
+      //check if the variable and expression are the same type
+      if(node->symbol->datatype == DATATYPE_BYTE || node->symbol->datatype == DATATYPE_SHORT || node->symbol->datatype == DATATYPE_LONG)
+        if(isNodeInt(node->sons[0]) == false){
+          fprintf(stderr, "Semantic ERROR Line %d: variable and expression type do not agree\n", node->line);
+          addErrorFlag();
+        }
+      if(node->symbol->datatype == DATATYPE_FLOAT || node->symbol->datatype == DATATYPE_DOUBLE)
+        if(isNodeReal(node->sons[0]) == false){
+          fprintf(stderr, "Semantic ERROR Line %d: variable and expression type do not agree\n", node->line);
+          addErrorFlag();
+        }
     }
 
     //check if vectors calls are calling vectors
@@ -104,6 +115,17 @@ void semanticCheckUsage(AST* node){
         fprintf(stderr, "Semantic ERROR Line %d: identifier %s must be a vector\n",node->line, node->symbol->text);
         addErrorFlag();
       }
+      //check if the vector and expression are the same type
+      if(node->symbol->datatype == DATATYPE_BYTE || node->symbol->datatype == DATATYPE_SHORT || node->symbol->datatype == DATATYPE_LONG)
+        if(isNodeInt(node->sons[0]) == false){
+          fprintf(stderr, "Semantic ERROR Line %d: vector and expression type do not agree\n", node->line);
+          addErrorFlag();
+        }
+      if(node->symbol->datatype == DATATYPE_FLOAT || node->symbol->datatype == DATATYPE_DOUBLE)
+        if(isNodeReal(node->sons[0]) == false){
+          fprintf(stderr, "Semantic ERROR Line %d: vector and expression type do not agree\n", node->line);
+          addErrorFlag();
+        }
     }
 
     //check if vectors calls are calling vectors and if it's index is valid
@@ -124,20 +146,64 @@ void semanticCheckUsage(AST* node){
       else semanticCheckFuncParam(node->sons[0], node->symbol->text, node->line);
     }
 
+    //check if variables declarations and literal are the same type
+    if(node->type == AST_VAR_DEC){
+      if(node->symbol->datatype == DATATYPE_BYTE || node->symbol->datatype == DATATYPE_SHORT || node->symbol->datatype == DATATYPE_LONG)
+        if(isNodeInt(node->sons[1]) == false){
+          fprintf(stderr, "Semantic ERROR Line %d: variable and literal type do not agree\n", node->line);
+          addErrorFlag();
+        }
+      if(node->symbol->datatype == DATATYPE_FLOAT || node->symbol->datatype == DATATYPE_DOUBLE)
+        if(isNodeReal(node->sons[1]) == false){
+          fprintf(stderr, "Semantic ERROR Line %d: variable and literal type do not agree\n", node->line);
+          addErrorFlag();
+        }
+    }
+
+    //check if vectors declarations and literals are the same type
+    if(node->type == AST_VECTOR_DEC){
+      AST* current_node;
+      current_node = node->sons[2];
+      int pos = 0;
+
+      while(current_node != NULL){
+        if(node->symbol->datatype == DATATYPE_BYTE || node->symbol->datatype == DATATYPE_SHORT || node->symbol->datatype == DATATYPE_LONG)
+          if(isNodeInt(current_node) == false){
+            fprintf(stderr, "Semantic ERROR Line %d: vector and literal_%d type do not agree\n", node->line, pos+1);
+            addErrorFlag();
+          }
+        if(node->symbol->datatype == DATATYPE_FLOAT || node->symbol->datatype == DATATYPE_DOUBLE)
+          if(isNodeReal(current_node) == false){
+            fprintf(stderr, "Semantic ERROR Line %d: vector and literal_%d type do not agree\n", node->line, pos+1);
+            addErrorFlag();
+          }
+          current_node = current_node->sons[0];
+          pos++;
+      }
+    }
+
+
+
     int i;
     for(i=0; i<MAX_SONS; i++){
       semanticCheckUsage(node->sons[i]);
     }/**/
 }
 
-void semanticCheckOperands(AST* node){ //OPERANDOS DE OPERADORES LÓGICOS PODEM SER ARITIMETICOS
+void semanticCheckOperands(AST* node){
   if(!node) return;
   //process this node
 
-  //check operands of arithmetical operators
-  if(node->type == AST_ADD || node->type == AST_SUB || node->type == AST_MUL || node->type == AST_DIV){
-  	int sons0 = node->sons[0]->type;
+  //check operands of arithmetical and logical operators
+  if(node->type == AST_ADD || node->type == AST_SUB || node->type == AST_MUL || node->type == AST_DIV ||
+  node->type == AST_LESS || node->type == AST_GREAT || node->type == AST_NEG || node->type == AST_LE ||
+  node->type == AST_GE || node->type == AST_EQ || node->type == AST_NE || node->type == AST_AND || node->type == AST_OR){
+
+    int sons0 = node->sons[0]->type;
   	int sons1 = node->sons[1]->type;
+    //in case sons are an expression between parentesis
+    if(sons0 == AST_EXP_P) sons0 = node->sons[0]->sons[0]->type;
+    if(sons1 == AST_EXP_P) sons1 = node->sons[1]->sons[0]->type;
 
   	//check first operands
     if(sons0 == AST_LESS || sons0 == AST_GREAT || sons0 == AST_NEG || sons0 == AST_LE || sons0 == AST_GE || sons0 == AST_EQ || sons0 == AST_NE || sons0 == AST_AND || sons0 == AST_OR){
@@ -150,21 +216,14 @@ void semanticCheckOperands(AST* node){ //OPERANDOS DE OPERADORES LÓGICOS PODEM 
 		addErrorFlag();
     }
   }
-  //check operands of logical operators
-  if(node->type == AST_LESS || node->type == AST_GREAT || node->type == AST_NEG || node->type == AST_LE || node->type == AST_GE || node->type == AST_EQ || node->type == AST_NE || node->type == AST_AND || node->type == AST_OR){
-  	int sons0 = node->sons[0]->type;
-  	int sons1 = node->sons[1]->type;
 
-  	//check first operands
-    if(sons0 == AST_ADD || sons0 == AST_SUB || sons0 == AST_MUL || sons0 == AST_DIV){
-		fprintf(stderr, "Semantic ERROR Line %d: the left operand cannot be arithmetical (+, -, *, /)\n", node->line);
-		addErrorFlag();
-    }
-    //check second operand
-    if(sons1 == AST_ADD || sons1 == AST_SUB || sons1 == AST_MUL || sons1 == AST_DIV){
-		fprintf(stderr, "Semantic ERROR Line %d: the right operand cannot be arithmetical (+, -, *, /)\n", node->line);
-		addErrorFlag();
-    }
+  if(node->type == AST_CMD_IF || node->type == AST_CMD_WHILE){
+      int sons0 = node->sons[0]->type;
+
+      if(sons0 != AST_LESS && sons0 != AST_GREAT && sons0 != AST_NEG && sons0 != AST_LE && sons0 != AST_GE && sons0 != AST_EQ && sons0 != AST_NE && sons0 != AST_AND && sons0 != AST_OR){
+        fprintf(stderr, "Semantic ERROR Line %d: condition must return a boolean value\n", node->line);
+    		addErrorFlag();
+      }
   }
 
   int i;
@@ -191,8 +250,8 @@ void semanticCheckReturnType(AST* node){
   }
   if(node->type == AST_KW_RETURN){
     //check the type of the expression that is being returned
-    //in our case, the defined types are interchangeable
-    if(isNodeReal(node->sons[0]) == false){
+    //in this case, the defined types are interchangeable
+    if(isNodeReal(node->sons[0]) == false && isNodeInt(node->sons[0]) == false){
       fprintf(stderr, "Semantic ERROR Line %d: invalid return type\n", node->line);
   		addErrorFlag();
       return;
@@ -217,11 +276,18 @@ void semanticCheckFuncParam(AST* node, char* function_name, int line){
 
 	while(current_node!=NULL && param_count<=numParam){
       //check the parameter's type
-      //in our case, the defined types are interchangeable
-			if(isNodeReal(current_node->sons[0]) == false){
-				fprintf(stderr, "Semantic ERROR Line %d: invalid function parameter type (parameter %i)\n",line, param_count + 1);
-  			addErrorFlag();
-			}
+      //if it is real
+      if(func_data->paramType[param_count] == DATATYPE_FLOAT || func_data->paramType[param_count] == DATATYPE_DOUBLE)
+  			if(isNodeReal(current_node->sons[0]) == false){
+  				fprintf(stderr, "Semantic ERROR Line %d: invalid function parameter type (parameter %i)\n",line, param_count + 1);
+    			addErrorFlag();
+  			}
+      //or if it is integer
+      if(func_data->paramType[param_count] == DATATYPE_BYTE || func_data->paramType[param_count] == DATATYPE_SHORT || func_data->paramType[param_count] == DATATYPE_LONG)
+        if(isNodeInt(current_node->sons[0]) == false){
+          fprintf(stderr, "Semantic ERROR Line %d: invalid function parameter type (parameter %i)\n",line, param_count + 1);
+          addErrorFlag();
+        }
 			param_count++;
 			current_node = current_node->sons[1];
 	}
@@ -238,15 +304,18 @@ void semanticCheckFuncParam(AST* node, char* function_name, int line){
 bool isNodeReal(AST *node){
   if(!node) return false;
 
-  //literals, variables, access to array and function calls are all real values
+  //literas, variables, access to array and function can be float or integer
   if(node->type == AST_SYMBOL || node->type == AST_ARRAY_POS || node->type == AST_FUNC_CALL)
-    return true;
+    if(node->symbol->datatype == DATATYPE_FLOAT || node->symbol->datatype == DATATYPE_DOUBLE || node->symbol->type == SYMBOL_LIT_REAL)
+      return true;
+    else
+      return false;
   //logical operations do not return real values
   if(node->type == AST_LESS || node->type == AST_GREAT || node->type == AST_NEG || node->type == AST_LE || node->type == AST_GE || node->type == AST_EQ || node->type == AST_NE || node->type == AST_AND || node->type == AST_OR)
     return false;
   //arithmetical operations must be checked
   if(node->type == AST_ADD || node->type == AST_SUB || node->type == AST_MUL || node->type == AST_DIV)
-    return isNodeReal(node->sons[0]) && isNodeReal(node->sons[1]);
+    return isNodeReal(node->sons[0]) || isNodeReal(node->sons[1]);
   //expressions between parentesis must be checked
   if(node->type == AST_EXP_P)
     isNodeReal(node->sons[0]);
