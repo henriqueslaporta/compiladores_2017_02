@@ -5,6 +5,7 @@
 #include "astree.h"
 #include "hash.h"
 #include "semantic.h"
+#include "genco.h"
 
 int yylex();
 int yyerror(char *msg);
@@ -81,6 +82,7 @@ program : decl				{
   	semanticCheckUsage($1);
   	semanticCheckOperands($1);
 		semanticCheckReturnType($1);
+		tacPrintBack(tacGenerator($1));
 	} //chamar todas as funçoes de check aqui
 
 decl : dec decl				{ $$ = astCreate(AST_DECLARATION,0,$1,$2,0,0); }
