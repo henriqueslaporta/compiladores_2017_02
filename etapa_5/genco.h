@@ -43,6 +43,13 @@ typedef struct struct_tac{
 	struct struct_tac* next;
 }TAC;
 
+typedef struct current_func_call{
+	int param;
+	HASH_NODE* symbol;
+}CURR_FUNCALL;
+
+CURR_FUNCALL currFunc;
+
 TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2);
 TAC* tacGenerator(AST* NODE);
 TAC* tacJoin(TAC* l1, TAC* l2);

@@ -3,6 +3,8 @@
 #include <stdlib.h>
 
 TAC* makeIfThen(TAC* code0, TAC* code1);
+TAC* makeWhile(TAC* code0, TAC* code1);
+TAC* makeFun(HASH_NODE* funSymbol, TAC* code3);
 
 
 TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2){
@@ -27,6 +29,7 @@ TAC* tacGenerator(AST* node){
 	for(int i = 0; i < MAX_SONS; i++)
 		code[i] = tacGenerator(node->sons[i]);
 
+	//process this node
 	switch(node->type){
 		case AST_SYMBOL: return tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
 		case AST_ADD: return tacJoin(tacJoin(code[0], code[1]), tacCreate(TAC_ADD, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0)); break;
@@ -51,6 +54,10 @@ TAC* tacGenerator(AST* node){
 		case AST_ARG_PRINT: return tacJoin(tacCreate(TAC_OUTPUT, code[0]?code[0]->res:0, 0, 0), code[1]); break;
 		case AST_KW_RETURN: return tacJoin(code[0], tacCreate(TAC_RETURN, code[0]?code[0]->res:0, 0, 0)); break;
 		case AST_CMD_IF: return makeIfThen(code[0], code[1]); break;
+		case AST_CMD_WHILE: return makeWhile(code[0], code[1]); break;
+		case AST_FUNC_DEC: return makeFun(node->symbol, code[3]); break;
+		case AST_FUNC_CALL: currFunc.param = 0; currFunc.symbol = node->symbol; return tacJoin(code[0], tacCreate(TAC_CALL, node->symbol, 0, 0)); break;
+		case AST_FUNPARAML: currFunc.param++; return tacJoin(tacJoin(code[0], tacCreate(TAC_ARG, code[0]?code[0]->res:0, 0, 0)), code[1]); break;
 	}
 
 	return tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
@@ -127,4 +134,35 @@ TAC* makeIfThen(TAC* code0, TAC* code1){
 	newLabelTac = tacCreate(TAC_LABEL, newLabel, 0, 0);
 
 	return tacJoin(tacJoin(tacJoin(code0, newJumpTac), code1), newLabelTac);
+}
+
+TAC* makeWhile(TAC* code0, TAC* code1){
+	TAC* preConditionLabelTac = 0;
+	TAC* postBlockLabelTac = 0;
+	TAC* JmpTac = 0;
+	TAC* JzTac = 0;
+
+
+	HASH_NODE* newPreConditionLabel;
+	HASH_NODE* newPostBlockLabel;
+
+	newPreConditionLabel = makeLabel();
+	newPostBlockLabel = makeLabel();
+
+	preConditionLabelTac = tacCreate(TAC_LABEL, newPreConditionLabel, 0, 0);
+	postBlockLabelTac = tacCreate(TAC_LABEL, newPostBlockLabel, 0, 0);
+	JmpTac = tacCreate(TAC_JMP, newPreConditionLabel, 0, 0);
+	JzTac = tacCreate(TAC_JZ, newPostBlockLabel, code0?code0->res:0, 0);
+
+	return tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(preConditionLabelTac, code0), JzTac), code1), JmpTac), postBlockLabelTac);
+}
+
+TAC* makeFun(HASH_NODE* funSymbol, TAC* code3){
+	TAC* beginFunTac = 0;
+	TAC* endFunTac = 0;
+
+	beginFunTac = tacCreate(TAC_BEGINFUN, funSymbol, 0, 0);
+	endFunTac = tacCreate(TAC_ENDFUN, funSymbol, 0, 0);
+
+	return tacJoin(tacJoin(beginFunTac, code3), endFunTac);
 }
