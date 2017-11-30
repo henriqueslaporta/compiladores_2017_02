@@ -82,8 +82,9 @@ program : decl				{
   	semanticCheckUsage($1);
   	semanticCheckOperands($1);
 		semanticCheckReturnType($1);
-		tacPrintBack(tacGenerator($1));
-	} //chamar todas as funçoes de check aqui
+		tacPrintForward(tacInvertList(tacGenerator($1)));
+		//tacPrintForward(tacGetFirst(tacGenerator($1)));
+	}
 
 decl : dec decl				{ $$ = astCreate(AST_DECLARATION,0,$1,$2,0,0); }
 	|						{ $$ = 0; }

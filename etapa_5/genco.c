@@ -5,6 +5,7 @@
 TAC* makeIfThen(TAC* code0, TAC* code1);
 TAC* makeWhile(TAC* code0, TAC* code1);
 TAC* makeFun(HASH_NODE* funSymbol, TAC* code3);
+void updateFuncArgs(TAC* func, HASH_NODE* symbol);
 
 
 TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2){
@@ -22,6 +23,7 @@ TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2){
 
 TAC* tacGenerator(AST* node){
 	TAC* code[MAX_SONS];
+	TAC* aux_tac;
 
 	if(!node) return 0;
 
@@ -56,8 +58,8 @@ TAC* tacGenerator(AST* node){
 		case AST_CMD_IF: return makeIfThen(code[0], code[1]); break;
 		case AST_CMD_WHILE: return makeWhile(code[0], code[1]); break;
 		case AST_FUNC_DEC: return makeFun(node->symbol, code[3]); break;
-		case AST_FUNC_CALL: currFunc.param = 0; currFunc.symbol = node->symbol; return tacJoin(code[0], tacCreate(TAC_CALL, node->symbol, 0, 0)); break;
-		case AST_FUNPARAML: currFunc.param++; return tacJoin(tacJoin(code[0], tacCreate(TAC_ARG, code[0]?code[0]->res:0, 0, 0)), code[1]); break;
+		case AST_FUNC_CALL: aux_tac = tacJoin(code[0], tacCreate(TAC_CALL, node->symbol, 0, 0)); updateFuncArgs(aux_tac, node->symbol); return aux_tac; break;
+		case AST_FUNPARAML: return tacJoin(tacJoin(code[0], tacCreate(TAC_ARG, 0, code[0]?code[0]->res:0, 0)), code[1]); break;
 	}
 
 	return tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
@@ -122,6 +124,25 @@ void tacPrintBack(TAC* last){
 		tacPrintSingle(tac);
 }
 
+TAC* tacInvertList(TAC* last){
+	TAC* aux_tac, *curr_tac;
+
+	aux_tac = last;
+	for(curr_tac = last->prev; curr_tac; curr_tac = curr_tac->prev){
+		curr_tac->next = aux_tac;
+		aux_tac = aux_tac->prev;
+	}
+
+	return aux_tac;
+}
+
+void tacPrintForward(TAC* first){
+	TAC* tac;
+	for(tac = first; tac; tac = tac->next)
+			tacPrintSingle(tac);
+
+}
+
 TAC* makeIfThen(TAC* code0, TAC* code1){
 	TAC* newJumpTac = 0;
 	TAC* newLabelTac = 0;
@@ -165,4 +186,16 @@ TAC* makeFun(HASH_NODE* funSymbol, TAC* code3){
 	endFunTac = tacCreate(TAC_ENDFUN, funSymbol, 0, 0);
 
 	return tacJoin(tacJoin(beginFunTac, code3), endFunTac);
+}
+
+void updateFuncArgs(TAC* func, HASH_NODE* symbol){
+	TAC* curr_arg;
+	curr_arg = func;
+
+	while(curr_arg->prev != NULL){
+		curr_arg = curr_arg->prev;
+
+		if(curr_arg->type == TAC_ARG)
+			curr_arg->res = symbol;
+	}
 }
