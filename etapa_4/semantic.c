@@ -199,28 +199,43 @@ void semanticCheckOperands(AST* node){
   node->type == AST_LESS || node->type == AST_GREAT || node->type == AST_NEG || node->type == AST_LE ||
   node->type == AST_GE || node->type == AST_EQ || node->type == AST_NE || node->type == AST_AND || node->type == AST_OR){
 
-    int sons0 = node->sons[0]->type;
-  	int sons1 = node->sons[1]->type;
+    AST *opLeft = node->sons[0];
+    AST *opRight = node->sons[1];
+
+    int opLeftType = opLeft->type;
+  	int opRightType = opRight->type;
     //in case sons are an expression between parentesis
-    if(sons0 == AST_EXP_P) sons0 = node->sons[0]->sons[0]->type;
-    if(sons1 == AST_EXP_P) sons1 = node->sons[1]->sons[0]->type;
+    while(opLeftType == AST_EXP_P){
+      opLeft = opLeft->sons[0];
+      opLeftType = opLeft->type;
+    }
+    while(opRightType == AST_EXP_P){
+      opRight = opRight->sons[0];
+      opRightType = opRight->type;
+    }
 
   	//check first operands
-    if(sons0 == AST_LESS || sons0 == AST_GREAT || sons0 == AST_NEG || sons0 == AST_LE || sons0 == AST_GE || sons0 == AST_EQ || sons0 == AST_NE || sons0 == AST_AND || sons0 == AST_OR){
+    if(opLeftType == AST_LESS || opLeftType == AST_GREAT || opLeftType == AST_NEG || opLeftType == AST_LE || opLeftType == AST_GE || opLeftType == AST_EQ || opLeftType == AST_NE || opLeftType == AST_AND || opLeftType == AST_OR){
 		fprintf(stderr, "Semantic ERROR Line %d: the left operand cannot be  logical (<, >, !, <=, >=, ==, !=, &&, ||)\n", node->line);
 		addErrorFlag();
     }
     //check second operand
-    if(sons1 == AST_LESS || sons1 == AST_GREAT || sons1 == AST_NEG || sons1 == AST_LE || sons1 == AST_GE || sons1 == AST_EQ || sons1 == AST_NE || sons1 == AST_AND || sons1 == AST_OR){
+    if(opRightType == AST_LESS || opRightType == AST_GREAT || opRightType == AST_NEG || opRightType == AST_LE || opRightType == AST_GE || opRightType == AST_EQ || opRightType == AST_NE || opRightType == AST_AND || opRightType == AST_OR){
 		fprintf(stderr, "Semantic ERROR Line %d: the right operand cannot be logical (<, >, !, <=, >=, ==, !=, &&, ||)\n", node->line);
 		addErrorFlag();
     }
   }
 
   if(node->type == AST_CMD_IF || node->type == AST_CMD_WHILE){
-      int sons0 = node->sons[0]->type;
+      AST *sons0 = node->sons[0];
+      int sons0type = sons0->type;
+      //in case son is an expression between parentesis
+      while(sons0type == AST_EXP_P){
+        sons0 = sons0->sons[0];
+        sons0type = sons0->type;
+      }
 
-      if(sons0 != AST_LESS && sons0 != AST_GREAT && sons0 != AST_NEG && sons0 != AST_LE && sons0 != AST_GE && sons0 != AST_EQ && sons0 != AST_NE && sons0 != AST_AND && sons0 != AST_OR){
+      if(sons0type != AST_LESS && sons0type != AST_GREAT && sons0type != AST_NEG && sons0type != AST_LE && sons0type != AST_GE && sons0type != AST_EQ && sons0type != AST_NE && sons0type != AST_AND && sons0type != AST_OR){
         fprintf(stderr, "Semantic ERROR Line %d: condition must return a boolean value\n", node->line);
     		addErrorFlag();
       }

@@ -75,7 +75,8 @@ HASH_NODE *hashFind (char *text)
 
 HASH_NODE* makeTemp(void){
 	static int factorySerialNumber = 0;
-	char nameBuffer[256];
+	char *nameBuffer;
+	nameBuffer = (char *) calloc (256, sizeof(char));
 	sprintf(nameBuffer, "__temp%d", factorySerialNumber++);
 
 	hashInsert(nameBuffer, SYMBOL_VAR);
@@ -83,7 +84,8 @@ HASH_NODE* makeTemp(void){
 
 HASH_NODE* makeLabel(void){
 	static int factorySerialNumber = 0;
-	char nameBuffer[256];
+	char *nameBuffer;
+	nameBuffer = (char *) calloc (256, sizeof(char));
 	sprintf(nameBuffer, "__label%d", factorySerialNumber++);
 	hashInsert(nameBuffer, SYMBOL_LABEL);
 }

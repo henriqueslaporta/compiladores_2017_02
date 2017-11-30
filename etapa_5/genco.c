@@ -28,7 +28,8 @@ TAC* tacGenerator(AST* node){
 	if(!node) return 0;
 
 	//first generate children
-	for(int i = 0; i < MAX_SONS; i++)
+	int i;
+	for(i = 0; i < MAX_SONS; i++)
 		code[i] = tacGenerator(node->sons[i]);
 
 	//process this node
@@ -120,12 +121,14 @@ void tacPrintSingle(TAC* tac){
 
 void tacPrintBack(TAC* last){
 	TAC* tac;
-	for(tac = last; tac; tac = tac->prev)
+	for(tac = last; tac != NULL; tac = tac->prev)
 		tacPrintSingle(tac);
 }
 
 TAC* tacInvertList(TAC* last){
 	TAC* aux_tac, *curr_tac;
+	
+	if(!last) return last;
 
 	aux_tac = last;
 	for(curr_tac = last->prev; curr_tac; curr_tac = curr_tac->prev){
@@ -138,7 +141,7 @@ TAC* tacInvertList(TAC* last){
 
 void tacPrintForward(TAC* first){
 	TAC* tac;
-	for(tac = first; tac; tac = tac->next)
+	for(tac = first; tac != NULL; tac = tac->next)
 			tacPrintSingle(tac);
 
 }
@@ -191,6 +194,8 @@ TAC* makeFun(HASH_NODE* funSymbol, TAC* code3){
 void updateFuncArgs(TAC* func, HASH_NODE* symbol){
 	TAC* curr_arg;
 	curr_arg = func;
+
+	if(!curr_arg) return;
 
 	while(curr_arg->prev != NULL){
 		curr_arg = curr_arg->prev;

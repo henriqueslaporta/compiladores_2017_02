@@ -9,7 +9,7 @@
 #include "y.tab.h"
 
 
-#define MAX_NUM_PARAM 10
+#define MAX_NUM_PARAM 100
 #define MAX_NUM_FUNCTIONS 100
 
 

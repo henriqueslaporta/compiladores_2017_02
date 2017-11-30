@@ -83,7 +83,6 @@ program : decl				{
   	semanticCheckOperands($1);
 		semanticCheckReturnType($1);
 		tacPrintForward(tacInvertList(tacGenerator($1)));
-		//tacPrintForward(tacGetFirst(tacGenerator($1)));
 	}
 
 decl : dec decl				{ $$ = astCreate(AST_DECLARATION,0,$1,$2,0,0); }

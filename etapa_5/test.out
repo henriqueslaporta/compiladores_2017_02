@@ -1,53 +1,43 @@
-a: short = 0;
-i: long = 0;
-v: long[10] 0 0 0 0 0 0 0 0 0 0;
+a: short = '0';
+b: short = "0";
+i: long = 0.0;
+v1: byte[10] 'q' 0 0 0 0.3 0 0 0 0 0;
 mat: long[10];
-f: float = 10.55;
+f: float = 10;
 c: byte = 'x';
 d: byte = 65;
+d: byte = 65;
 
-(long) main(){
-a=10;
-v[2]= v[10 - 1];
-print " Digite um numero: \n";
-read > i;
-while (i < 10)
-	{
-a=incn(a + 1, 1);
-i=i + 1
-};
-print "Incrementado algumas vezes fica ", a, "\n";
-if (a == 5) then
-	{
-print "Parou no meio\n";
+(short) voidfunc1(param1:byte, param2:float, param3:short, param4:short, param5:short, param6:short, param7:short, param8:short, param9:short, param10:short, param11:short, param12:short, param13:short, param14:short){
+;
+;
+;
+;
+;
+;
+;
+;
+;
 
 }
-;
+
+(byte) voidfunc2(){
 if (a == 11) then
-	
+	i=2
+else
+	i=2;
+while (voidfunc(d + 1, H, oi))
+	i=2;
+nao declarado=10;
+a=i[1];
+i[1]= a;
+mat=2;
+a=mat[2];
+mat[a]= a;
+a=2 + ( ( 2 + 3 > 1 ) );
+if (( a > a ) + ( b < b ) + a) then
+	b=6
 ;
-if (a == 11) then
-	{
-
-}
-;
-;
-;
-;
-{
-;
-
-};
-{
-
-};
-
-}
-
-(long) incn(x:long, n:long){
-return ( x + n )
-}
-
-(short) voidfunc(){
+return ( voidfunc1(1 / 3, 2 + 2.2, 3.3) * mat[1.2] + a / 2 );
 
 }
