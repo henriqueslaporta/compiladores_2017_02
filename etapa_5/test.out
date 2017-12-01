@@ -9,7 +9,7 @@ d: byte = 65;
 d: byte = 65;
 
 (short) voidfunc1(param1:byte, param2:float, param3:short, param4:short, param5:short, param6:short, param7:short, param8:short, param9:short, param10:short, param11:short, param12:short, param13:short, param14:short){
-;
+return ( 0 < 1 );
 ;
 ;
 ;

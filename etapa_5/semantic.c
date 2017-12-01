@@ -224,6 +224,7 @@ void semanticCheckOperands(AST* node){
     }
   }
 
+  //check if operands of conditions are boolean
   if(node->type == AST_CMD_IF || node->type == AST_CMD_WHILE){
       AST *sons0 = node->sons[0];
       int sons0type = sons0->type;
@@ -257,10 +258,10 @@ void semanticCheckVectorIndex(AST* node){
 void semanticCheckReturnType(AST* node){
   if(!node) return;
 
-  if(node->type == AST_FUNC_DEC){
+  /*if(node->type == AST_FUNC_DEC){
     semanticCheckReturnType(node->sons[3]);
     return;
-  }
+  }*/
   if(node->type == AST_KW_RETURN){
     //check the type of the expression that is being returned
     //in this case, the defined types are interchangeable

@@ -59,7 +59,9 @@ TAC* tacGenerator(AST* node){
 		case AST_CMD_IF: return makeIfThen(code[0], code[1]); break;
 		case AST_CMD_WHILE: return makeWhile(code[0], code[1]); break;
 		case AST_FUNC_DEC: return makeFun(node->symbol, code[3]); break;
+		//inserts the name of the function to its arguments here
 		case AST_FUNC_CALL: aux_tac = tacJoin(code[0], tacCreate(TAC_CALL, node->symbol, 0, 0)); updateFuncArgs(aux_tac, node->symbol); return aux_tac; break;
+		//at first creates TAC_ARG without its owner function
 		case AST_FUNPARAML: return tacJoin(tacJoin(code[0], tacCreate(TAC_ARG, 0, code[0]?code[0]->res:0, 0)), code[1]); break;
 	}
 
@@ -127,7 +129,7 @@ void tacPrintBack(TAC* last){
 
 TAC* tacInvertList(TAC* last){
 	TAC* aux_tac, *curr_tac;
-	
+
 	if(!last) return last;
 
 	aux_tac = last;
@@ -191,6 +193,7 @@ TAC* makeFun(HASH_NODE* funSymbol, TAC* code3){
 	return tacJoin(tacJoin(beginFunTac, code3), endFunTac);
 }
 
+//update the TAC_ARGs with its owner's name 
 void updateFuncArgs(TAC* func, HASH_NODE* symbol){
 	TAC* curr_arg;
 	curr_arg = func;
