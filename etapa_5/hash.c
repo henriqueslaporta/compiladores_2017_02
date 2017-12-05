@@ -79,7 +79,7 @@ HASH_NODE* makeTemp(void){
 	nameBuffer = (char *) calloc (256, sizeof(char));
 	sprintf(nameBuffer, "__temp%d", factorySerialNumber++);
 
-	hashInsert(nameBuffer, SYMBOL_VAR);
+	return hashInsert(nameBuffer, SYMBOL_VAR);
 }
 
 HASH_NODE* makeLabel(void){
@@ -87,7 +87,8 @@ HASH_NODE* makeLabel(void){
 	char *nameBuffer;
 	nameBuffer = (char *) calloc (256, sizeof(char));
 	sprintf(nameBuffer, "__label%d", factorySerialNumber++);
-	hashInsert(nameBuffer, SYMBOL_LABEL);
+
+	return hashInsert(nameBuffer, SYMBOL_LABEL);
 }
 
 
