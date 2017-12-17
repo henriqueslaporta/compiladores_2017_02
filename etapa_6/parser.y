@@ -75,15 +75,20 @@ int yyerror(char *msg);
 
 %%
 program : decl				{
+	TAC* code;
+
 	//astPrint($1,0);
 	astPrintToFile($1, outputfile);
-  	semanticSetTypes($1);
-  	semanticCheckUndeclared();
-  	semanticCheckUsage($1);
-  	semanticCheckOperands($1);
-		semanticCheckReturnType($1);
-		tacPrintForward(tacInvertList(tacGenerator($1)));
-	}
+  semanticSetTypes($1);
+  semanticCheckUndeclared();
+  semanticCheckUsage($1);
+  semanticCheckOperands($1);
+	semanticCheckReturnType($1);
+
+	code = tacInvertList(tacGenerator($1));
+	//tacPrintForward(code);
+	asmGenerator("out.s",code);	
+}
 
 decl : dec decl				{ $$ = astCreate(AST_DECLARATION,0,$1,$2,0,0); }
 	|						{ $$ = 0; }
