@@ -11,6 +11,8 @@ void asmGenerator(char *filename, TAC* code){
   }
 
   //print all values in HASH TABLE
+  fprintf(fout,".data\n");
+  int str_count = 0;
   int i;
   HASH_NODE *n;
   for (i=0; i< HASH_SIZE; i++)
@@ -19,13 +21,16 @@ void asmGenerator(char *filename, TAC* code){
      {
           if(n->type == SYMBOL_TEMP_VAR)
             fprintf(fout,".comm %s,4,4\n",n->text);
-          if(n->type == SYMBOL_LIT_STRING)
-            fprintf(fout,"\nlit_%s:\n"
-                          "\t.string %s\n", n->text, n->text);
+          if(n->type == SYMBOL_LIT_STRING){
+            fprintf(fout,"\nlit_string%d:\n"
+                          "\t.string %s\n\n", str_count, n->text);
+            str_count++;
+          }
      }
   }
 
   //print TACs
+  str_count = 0;
   for (tac=code; tac ; tac=tac->next){
     switch(tac->type){
       case TAC_VARDEC: fprintf(fout,"\n.globl	%s\n"
@@ -36,24 +41,32 @@ void asmGenerator(char *filename, TAC* code){
                                     "\t.long	%s\n", tac->res->text, tac->res->text, tac->res->text, tac->res->text, tac->op1->text);
                     break;
 
-      case TAC_ADD: fprintf(fout,"\nmovl %s(%%rip), %%edx\n"
-                                  "movl %s(%%rip), %%eax\n"
-                                  "addl %%edx, %%eax\n"
-                                  "movl %%eax, %s(%%rip)\n", tac->op1->text, tac->op2->text, tac->res->text);
+      case TAC_ADD: if(tac->op1->type == SYMBOL_LIT_INT) fprintf(fout,"\nmovl	$%s, %%edx\n",tac->op1->text);
+                    else fprintf(fout,"\nmovl %s(%%rip), %%edx\n", tac->op1->text);
+                    if(tac->op2->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%eax\n",tac->op2->text);
+                    else fprintf(fout, "movl %s(%%rip), %%eax\n", tac->op2->text);
+                    fprintf(fout, "addl %%edx, %%eax\n"
+                                  "movl %%eax, %s(%%rip)\n", tac->res->text);
                     break;
-      case TAC_ASS: fprintf(fout,"\nmovl	%s(%%rip), %s(%%rip)\n", tac->op1->text, tac->res->text);
+      case TAC_ASS: if(tac->op1->type == SYMBOL_LIT_INT) fprintf(fout,"\nmovl	$%s, %s(%%rip)\n",tac->op1->text, tac->res->text);
+                    else fprintf(fout,"\nmovl	%s(%%rip), %%eax\n"
+                                      "movl %%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
                     break;
-      case TAC_OUTPUT: fprintf(fout,"\nmovl	$%s, %%edi\n"
-                                  	"\tcall	puts\n", tac->res->text);
-                      break;
-      case TAC_BEGINFUN:/* fprintf(fout,"_%s\n"
-                                    "\tpushq\n"
-                                    "\tmoveq\n"
-                                    "\tsubq\t$16, %%rsp\n", tac->res->text)*/;break;
-      case TAC_ENDFUN:/* fprintf(fout,"\n"
-                                  "\t\n"
-                                  "\t\n"
-                                  "\t\n");*/break;
+      case TAC_OUTPUT:
+                    fprintf(fout,"\nmovl	$lit_string%d, %%edi\n"
+                              	 "\tcall	puts\n", str_count++);
+                    break;
+      case TAC_BEGINFUN: fprintf(fout,"\n.text\n"
+      	                              ".globl	%s\n"
+      	                              ".type	%s, @function\n"
+                                      "%s:\n"
+      	                              "\npushq %%rbp\n"
+      	                              "movq	%%rsp, %%rbp\n", tac->res->text, tac->res->text, tac->res->text);
+                    break;
+      case TAC_ENDFUN:fprintf(fout,"\nmovl	$0, %%eax\n"
+    	                             "popq	%%rbp\n"
+    	                             "ret\n");
+                    break;
     }
   }
 

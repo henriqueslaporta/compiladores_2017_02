@@ -1,7 +1,7 @@
 a: short = 0;
 b: short = 0;
 
-(short) voidfunc1 (){
+(short) main (){
   print "Hello World padrao";
   a = 1;
   b = a + 1;

@@ -1,6 +1,8 @@
+.data
 
-lit_"Hello World padrao":
+lit_string0:
 	.string "Hello World padrao"
+
 .comm __temp0,4,4
 
 .globl	a
@@ -17,14 +19,27 @@ a:
 b:
 	.long	0
 
-movl	$"Hello World padrao", %edi
+.text
+.globl	main
+.type	main, @function
+main:
+
+pushq %rbp
+movq	%rsp, %rbp
+
+movl	$lit_string0, %edi
 	call	puts
 
-movl	1(%rip), a(%rip)
+movl	$1, a(%rip)
 
 movl a(%rip), %edx
-movl 1(%rip), %eax
+movl	$1, %eax
 addl %edx, %eax
 movl %eax, __temp0(%rip)
 
-movl	__temp0(%rip), b(%rip)
+movl	__temp0(%rip), %eax
+movl %eax, b(%rip)
+
+movl	$0, %eax
+popq	%rbp
+ret
