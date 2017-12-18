@@ -1,4 +1,16 @@
+#include <string.h>
 #include "asmgen.h"
+
+int findString(char *stringName){
+    int i, found = 0;
+
+    for(i = 0; i < NUMBER_OF_STRINGS; i++){
+        if(strcmp(strings[i],stringName) == 0)
+            return i;
+    }
+
+    return NUMBER_OF_STRINGS + 1;
+}
 
 void asmGenerator(char *filename, TAC* code){
   TAC *tac =code;
@@ -24,6 +36,7 @@ void asmGenerator(char *filename, TAC* code){
           if(n->type == SYMBOL_LIT_STRING){
             fprintf(fout,"\nlit_string%d:\n"
                           "\t.string %s\n\n", str_count, n->text);
+            strcpy(strings[str_count], n->text);
             str_count++;
           }
      }
@@ -54,7 +67,7 @@ void asmGenerator(char *filename, TAC* code){
                     break;
       case TAC_OUTPUT:
                     fprintf(fout,"\nmovl	$lit_string%d, %%edi\n"
-                              	 "\tcall	puts\n", str_count++);
+                              	 "\tcall	puts\n", findString(tac->res->text));
                     break;
       case TAC_BEGINFUN: fprintf(fout,"\n.text\n"
       	                              ".globl	%s\n"
