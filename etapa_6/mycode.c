@@ -7,13 +7,15 @@
   gcc mycode.s -o mycode
   ./mycode
 */
-float a;
-float b;
+int a = 0;
+int b;
+int c;
 
 int main(){
-  printf("Hello World");
+  printf("Hello World\n");
   a = 1;
-  b = a + 1.5;
-  printf("\n%f", b);
+  b= 1;
+  c = a + b;
+  printf("\n%d", c);
   return 0;
 }

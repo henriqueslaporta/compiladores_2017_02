@@ -9,6 +9,7 @@
 #define SYMBOL_VEC 4
 #define SYMBOL_FUNC 5
 #define SYMBOL_LABEL 6
+#define SYMBOL_TEMP_VAR 7
 
 #define DATATYPE_BYTE 1
 #define DATATYPE_SHORT 2

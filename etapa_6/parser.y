@@ -6,6 +6,7 @@
 #include "hash.h"
 #include "semantic.h"
 #include "genco.h"
+#include "asmgen.h"
 
 int yylex();
 int yyerror(char *msg);
@@ -86,8 +87,8 @@ program : decl				{
 	semanticCheckReturnType($1);
 
 	code = tacInvertList(tacGenerator($1));
-	//tacPrintForward(code);
-	asmGenerator("out.s",code);	
+	tacPrintForward(code);
+	asmGenerator("out.s",code);
 }
 
 decl : dec decl				{ $$ = astCreate(AST_DECLARATION,0,$1,$2,0,0); }
