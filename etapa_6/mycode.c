@@ -7,11 +7,11 @@
   gcc mycode.s -o mycode
   ./mycode
 */
-int a = 0;
-int b = 0;
+int a = 55;
+int b = 3;
 
 int main(){
-  printf("Hello World\n");
-  a = 1;
-  b = a + 1;
+	if(a == b){
+		b = 2;
+	}
 }
