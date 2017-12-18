@@ -26,7 +26,11 @@ main:
 	movl	a(%rip), %edx
 	movl	b(%rip), %eax
 	cmpl	%eax, %edx
-	jne	.L2
+	jle	.L2
+	movl	b(%rip), %edx
+	movl	a(%rip), %eax
+	cmpl	%eax, %edx
+	jle	.L2
 	movl	$2, b(%rip)
 .L2:
 	movl	$0, %eax

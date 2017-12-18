@@ -96,14 +96,55 @@ void asmGenerator(char *filename, TAC* code){
                     fprintf(fout,"\nmovl	$lit_string%d, %%edi\n"
                               	 "\tcall	puts\n", findString(tac->res->text));
                     break;
-	  case TAC_EQ:fprintf(fout,"\n## cmd IF\n");
+	  case TAC_EQ:fprintf(fout,"\n## EQ\n");
 				  if(tac->op1->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%edx\n",tac->op1->text);
                   else fprintf(fout,"movl %s(%%rip), %%edx\n", tac->op1->text);
                   if(tac->op2->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%eax\n",tac->op2->text);
                   else fprintf(fout, "movl %s(%%rip), %%eax\n", tac->op2->text);
-				  fprintf(fout, "cmpl %%eax, %%edx\n");
+				  fprintf(fout, "cmpl %%eax, %%edx\n"
+								"jne");
 				  break;
-	  case TAC_JZ: fprintf(fout, "\njne .%s\n", tac->res->text);
+	  case TAC_LESS:fprintf(fout,"\n## LESS\n");
+				  if(tac->op1->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%edx\n",tac->op1->text);
+                  else fprintf(fout,"movl %s(%%rip), %%edx\n", tac->op1->text);
+                  if(tac->op2->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%eax\n",tac->op2->text);
+                  else fprintf(fout, "movl %s(%%rip), %%eax\n", tac->op2->text);
+				  fprintf(fout, "cmpl %%eax, %%edx\n"
+								"jge");
+				  break;
+	  case TAC_GREAT:fprintf(fout,"\n## GREAT\n");
+				  if(tac->op1->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%edx\n",tac->op1->text);
+                  else fprintf(fout,"movl %s(%%rip), %%edx\n", tac->op1->text);
+                  if(tac->op2->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%eax\n",tac->op2->text);
+                  else fprintf(fout, "movl %s(%%rip), %%eax\n", tac->op2->text);
+				  fprintf(fout, "cmpl %%eax, %%edx\n"
+								"jle");
+				  break;
+	  case TAC_LE:fprintf(fout,"\n## LE\n");
+				  if(tac->op1->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%edx\n",tac->op1->text);
+                  else fprintf(fout,"movl %s(%%rip), %%edx\n", tac->op1->text);
+                  if(tac->op2->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%eax\n",tac->op2->text);
+                  else fprintf(fout, "movl %s(%%rip), %%eax\n", tac->op2->text);
+				  fprintf(fout, "cmpl %%eax, %%edx\n"
+								"jg");
+				  break;
+      case TAC_GE:fprintf(fout,"\n## GE\n");
+				  if(tac->op1->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%edx\n",tac->op1->text);
+                  else fprintf(fout,"movl %s(%%rip), %%edx\n", tac->op1->text);
+                  if(tac->op2->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%eax\n",tac->op2->text);
+                  else fprintf(fout, "movl %s(%%rip), %%eax\n", tac->op2->text);
+				  fprintf(fout, "cmpl %%eax, %%edx\n"
+								"jl");
+				  break;
+	  case TAC_NE:fprintf(fout,"\n## NE\n");
+				  if(tac->op1->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%edx\n",tac->op1->text);
+                  else fprintf(fout,"movl %s(%%rip), %%edx\n", tac->op1->text);
+                  if(tac->op2->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%eax\n",tac->op2->text);
+                  else fprintf(fout, "movl %s(%%rip), %%eax\n", tac->op2->text);
+				  fprintf(fout, "cmpl %%eax, %%edx\n"
+								"je");
+				  break;
+	  case TAC_JZ: fprintf(fout, " .%s\n", tac->res->text); //Sendo utilizado apenas para escrever o label
 				  break;
 	  case TAC_LABEL: fprintf(fout, "\n.%s:\n", tac->res->text);
 				  break;

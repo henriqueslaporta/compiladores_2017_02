@@ -11,7 +11,7 @@ int a = 55;
 int b = 3;
 
 int main(){
-	if(a == b){
+	if(a > b && b > a){
 		b = 2;
 	}
 }

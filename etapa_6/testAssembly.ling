@@ -2,7 +2,7 @@ a: short = 2;
 b: short = 3;
 
 (short) main (){
-  if((2-2) == 0) then{
+  if(2 > 2 && 2 > 2) then{
 	print "dentro";
   };
   print "fora";
