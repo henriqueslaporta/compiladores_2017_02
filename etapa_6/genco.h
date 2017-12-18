@@ -32,6 +32,8 @@
 #define TAC_CALL 25
 #define TAC_ARG 26
 #define TAC_SYMBOL 27
+#define TAC_VARDEC 28
+
 
 
 typedef struct struct_tac{

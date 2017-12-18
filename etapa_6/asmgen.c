@@ -17,17 +17,25 @@ void asmGenerator(char *filename, TAC* code){
   {
      for (n=table[i]; n; n=n->next)
      {
-         if(n->type == SYMBOL_TEMP_VAR)
-          fprintf(fout,".comm %s,4,4\n",n->text);
-         if(n->type == SYMBOL_LIT_STRING)
-          fprintf(fout,"\nlit_%s:\n"
-                        "\t.string %s\n", n->text, n->text);
+          if(n->type == SYMBOL_TEMP_VAR)
+            fprintf(fout,".comm %s,4,4\n",n->text);
+          if(n->type == SYMBOL_LIT_STRING)
+            fprintf(fout,"\nlit_%s:\n"
+                          "\t.string %s\n", n->text, n->text);
      }
   }
 
   //print TACs
   for (tac=code; tac ; tac=tac->next){
     switch(tac->type){
+      case TAC_VARDEC: fprintf(fout,"\n.globl	%s\n"
+                                    ".align 4\n"
+                                    ".type	%s, @object\n"
+                                    ".size	%s, 4\n"
+                                    "%s:\n"
+                                    "\t.long	%s\n", tac->res->text, tac->res->text, tac->res->text, tac->res->text, tac->op1->text);
+                    break;
+
       case TAC_ADD: fprintf(fout,"\nmovl %s(%%rip), %%edx\n"
                                   "movl %s(%%rip), %%eax\n"
                                   "addl %%edx, %%eax\n"
