@@ -146,6 +146,8 @@ void asmGenerator(char *filename, TAC* code){
 				  break;
 	  case TAC_JZ: fprintf(fout, " .%s\n", tac->res->text); //Sendo utilizado apenas para escrever o label
 				  break;
+	  case TAC_JMP: fprintf(fout, "jmp .%s\n", tac->res->text);
+				  break;
 	  case TAC_LABEL: fprintf(fout, "\n.%s:\n", tac->res->text);
 				  break;
       case TAC_BEGINFUN: fprintf(fout,"\n.text\n"

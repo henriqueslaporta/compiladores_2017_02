@@ -7,11 +7,11 @@
   gcc mycode.s -o mycode
   ./mycode
 */
-int a = 55;
+int a = 0;
 int b = 3;
 
 int main(){
-	if(a > b && b > a){
-		b = 2;
+	while(a<10){
+		a++;
 	}
 }

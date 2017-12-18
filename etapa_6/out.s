@@ -4,7 +4,6 @@
 lit_string0:
 	.string "fora"
 
-.comm __temp2,4,4
 .comm __temp0,4,4
 
 lit_string1:
@@ -16,7 +15,7 @@ lit_string1:
 .type	a, @object
 .size	a, 4
 a:
-	.long	2
+	.long	0
 
 .globl	b
 .align 4
@@ -33,21 +32,29 @@ main:
 pushq %rbp
 movq	%rsp, %rbp
 
-## LESS
-movl	$2, %edx
-movl	$2, %eax
+.__label0:
+
+## GREAT
+movl a(%rip), %edx
+movl	$10, %eax
 cmpl %eax, %edx
-jle
-## LESS
-movl	$2, %edx
-movl	$2, %eax
-cmpl %eax, %edx
-jle .__label0
+jle .__label1
 
 movl	$lit_string1, %edi
 	call	puts
 
-.__label0:
+## cmd ADD
+movl a(%rip), %edx
+movl	$1, %eax
+addl %edx, %eax
+movl %eax, __temp1(%rip)
+
+## cmd ASS
+movl	__temp1(%rip), %eax
+movl %eax, a(%rip)
+jmp .__label0
+
+.__label1:
 
 movl	$lit_string0, %edi
 	call	puts

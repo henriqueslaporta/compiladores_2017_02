@@ -1,9 +1,10 @@
-a: short = 2;
+a: short = 0;
 b: short = 3;
 
 (short) main (){
-  if(2 > 2 && 2 > 2) then{
-	print "dentro";
+  while (a>10){
+    print "dentro";
+	a = a + 1;
   };
   print "fora";
 }
