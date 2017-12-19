@@ -64,6 +64,7 @@ TAC* tacGenerator(AST* node){
 		//at first creates TAC_ARG without its owner function
 		case AST_FUNPARAML: return tacJoin(tacJoin(code[0], tacCreate(TAC_ARG, 0, code[0]?code[0]->res:0, 0)), code[1]); break;
 		case AST_VAR_DEC: return tacJoin(code[0], tacCreate(TAC_VARDEC, node->symbol, code[1]?code[1]->res:0, 0)); break;
+		case AST_VECTOR_DEC: return tacJoin(code[0], tacCreate(TAC_VECDEC, node->symbol, code[1]?code[1]->res:0, 0)); break;
 	}
 
 	return tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
@@ -114,6 +115,7 @@ void tacPrintSingle(TAC* tac){
 		case TAC_CALL: fprintf(stderr, "TAC_CALL "); break;
 		case TAC_ARG: fprintf(stderr, "TAC_ARG "); break;
 		case TAC_VARDEC: fprintf(stderr, "TAC_VARDEC "); break;
+		case TAC_VECDEC: fprintf(stderr, "TAC_VECDEC "); break;
 		default: fprintf(stderr, "UNKNOWN "); break;
 	}
 

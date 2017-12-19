@@ -1,11 +1,5 @@
 	.file	"mycode.c"
-	.globl	a
-	.bss
-	.align 4
-	.type	a, @object
-	.size	a, 4
-a:
-	.zero	4
+	.comm	a,80,32
 	.globl	b
 	.data
 	.align 4
@@ -24,15 +18,7 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	jmp	.L2
-.L3:
-	movl	a(%rip), %eax
-	addl	$1, %eax
-	movl	%eax, a(%rip)
-.L2:
-	movl	a(%rip), %eax
-	cmpl	$9, %eax
-	jle	.L3
+	movl	$1, a+20(%rip)
 	movl	$0, %eax
 	popq	%rbp
 	.cfi_def_cfa 7, 8

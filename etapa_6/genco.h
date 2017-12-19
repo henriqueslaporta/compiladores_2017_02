@@ -33,6 +33,7 @@
 #define TAC_ARG 26
 #define TAC_SYMBOL 27
 #define TAC_VARDEC 28
+#define TAC_VECDEC 29
 
 
 

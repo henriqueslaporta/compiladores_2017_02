@@ -1,10 +1,5 @@
-a: short = 0;
-b: short = 3;
+mat: short[10];
 
 (short) main (){
-  while (a>10){
-    print "dentro";
-	a = a + 1;
-  };
-  print "fora";
+	mat[10] = 1;
 }

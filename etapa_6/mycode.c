@@ -7,11 +7,9 @@
   gcc mycode.s -o mycode
   ./mycode
 */
-int a = 0;
+int a[20];
 int b = 3;
 
 int main(){
-	while(a<10){
-		a++;
-	}
+	a[5] = 1;
 }
