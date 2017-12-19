@@ -1,16 +1,80 @@
 mat: short[10];
-a: short = 3;
+a: short = 2;
 
-(short) func2(x:short){
+(short) func2(){
 return ( a );
 
 }
 
 (short) main(){
-if (func2(2) == 3) then
+if (a == 2) then
 	{
-print "dentro";
+print "Variavel a = 2";
 
 }
+;
+a=a + 10;
+if (a == 12) then
+	{
+print "(soma a + 10) a = 12";
+
+}
+;
+a=a - 2;
+if (a == 10) then
+	{
+print "(subtrai a - 2) a = 10";
+
+}
+;
+a=a * 2;
+if (a == 20) then
+	{
+print "(multiplica a * 2) a = 20";
+
+}
+;
+a=a / 2;
+if (a == 10) then
+	{
+print "(divide a / 2) a = 10";
+
+}
+;
+if (a <= 10) then
+	{
+print "( a <= 10 ) SIM";
+
+}
+;
+if (a >= 10) then
+	{
+print "( a >= 10 ) SIM";
+
+}
+;
+print "\nRetorno da FUNC2() é igual (a)?";
+if (func2() == a) then
+	{
+print "Sim!"
+}
+;
+a=0;
+print "\nIniciando WHILE 0 até 5";
+while (a < 5)
+	{
+print "Rotina interna While";
+a=a + 1;
+
+};
+print "FIM WHILE\n";
+print "Assinalndo vetor mat[0] = 33";
+mat[0]= 33;
+if (mat[0] == 33) then
+	{
+print "SIM mat[0] = 33";
+
+}
+;
 
 }
