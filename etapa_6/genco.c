@@ -60,7 +60,7 @@ TAC* tacGenerator(AST* node){
 		case AST_CMD_WHILE: return makeWhile(code[0], code[1]); break;
 		case AST_FUNC_DEC: return makeFun(node->symbol, code[3]); break;
 		//inserts the name of the function to its arguments here
-		case AST_FUNC_CALL: aux_tac = tacJoin(code[0], tacCreate(TAC_CALL, node->symbol, 0, 0)); updateFuncArgs(aux_tac, node->symbol); return aux_tac; break;
+		case AST_FUNC_CALL: aux_tac = tacJoin(code[0], tacCreate(TAC_CALL, makeTemp(), node->symbol, 0)); updateFuncArgs(aux_tac, node->symbol); return aux_tac; break;
 		//at first creates TAC_ARG without its owner function
 		case AST_FUNPARAML: return tacJoin(tacJoin(code[0], tacCreate(TAC_ARG, 0, code[0]?code[0]->res:0, 0)), code[1]); break;
 		case AST_VAR_DEC: return tacJoin(code[0], tacCreate(TAC_VARDEC, node->symbol, code[1]?code[1]->res:0, 0)); break;

@@ -153,8 +153,17 @@ void asmGenerator(char *filename, TAC* code){
                     else fprintf(fout,"movl	%s(%%rip), %%eax\n"
                                       "movl	%%eax, %s+20(%%rip)\n", tac->op1->text, tac->res->text);
                     break;
-      case TAC_OUTPUT:
-                    fprintf(fout,"\nmovl	$lit_string%d, %%edi\n"
+	  case TAC_VECREAD: fprintf(fout,"\n## cmd VECREAD\n");
+						fprintf(fout,"movl	%s+%d(%%rip), %%eax\n"
+									 "movl	%%eax, %s(%%rip)\n", tac->op1->text, atoi(tac->op2->text) * 4, tac->res->text );
+                    break;
+	  case TAC_CALL: fprintf(fout,"\n## call FUN\n"
+								  "movl	$0, %%eax\n"
+								  "call %s\n"
+								  "movl %%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
+					break;
+      case TAC_OUTPUT:fprintf(fout,"\n## cmd PRINT\n");
+                    fprintf(fout,"movl	$lit_string%d, %%edi\n"
                               	 "\tcall	puts\n", findString(tac->res->text));
                     break;
       case TAC_BEGINFUN: fprintf(fout,"\n.text\n"
@@ -164,10 +173,13 @@ void asmGenerator(char *filename, TAC* code){
       	                              "\npushq %%rbp\n"
       	                              "movq	%%rsp, %%rbp\n", tac->res->text, tac->res->text, tac->res->text);
                     break;
-      case TAC_ENDFUN:fprintf(fout,"\nmovl	$0, %%eax\n"
-    	                             "popq	%%rbp\n"
+      case TAC_ENDFUN:fprintf(fout,  "popq	%%rbp\n"
     	                             "ret\n");
                     break;
+	  case TAC_RETURN:fprintf(fout,"\n## cmd RETURN\n");
+					if(tac->res->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%eax\n", tac->res->text);
+                    else fprintf(fout,"movl	%s(%%rip), %%eax\n", tac->res->text);
+					break;
     }
   }
 

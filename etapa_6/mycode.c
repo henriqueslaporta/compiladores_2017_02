@@ -10,6 +10,10 @@
 int a[20];
 int b = 3;
 
+int func(){
+	return 3;
+}
+
 int main(){
-	a[5] = 1;
+	b = func();
 }

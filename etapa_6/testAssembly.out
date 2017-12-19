@@ -1,6 +1,16 @@
 mat: short[10];
+a: short = 3;
+
+(short) func2(x:short){
+return ( a );
+
+}
 
 (short) main(){
-mat[10]= 1;
+if (func2(2) == 3) then
+	{
+print "dentro";
+
+}
 
 }
