@@ -36,7 +36,7 @@ int main (int argc, char **argv)
 	fclose(outputfile);
 
 	//printf("\nNumero de linhas do arquivo: %d\n", getLineNumber()-1);
-	hashPrint();
+	//hashPrint();
 
 	if(errorFlag > 0){
 		fprintf(stderr,"Programa possui %d erro(s) semantico(s). \n", getErrorFlag());

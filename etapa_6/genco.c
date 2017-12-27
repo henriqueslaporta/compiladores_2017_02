@@ -1,7 +1,9 @@
 #include "genco.h"
+#include "y.tab.h"
 #include <stdio.h>
 #include <stdlib.h>
 
+TAC* makeOutput(TAC* code0, TAC* code1);
 TAC* makeIfThen(TAC* code0, TAC* code1);
 TAC* makeWhile(TAC* code0, TAC* code1);
 TAC* makeFun(HASH_NODE* funSymbol, TAC* code3);
@@ -54,7 +56,7 @@ TAC* tacGenerator(AST* node){
 		//vecread: store variable, vector, offset
 		case AST_ARRAY_POS: return tacJoin(code[0], tacCreate(TAC_VECREAD, makeTemp(), node->symbol, code[0]?code[0]->res:0)); break;
 		case AST_KW_READ: return tacCreate(TAC_INPUT, node->symbol, 0, 0); break;
-		case AST_ARG_PRINT: return tacJoin(tacCreate(TAC_OUTPUT, code[0]?code[0]->res:0, 0, 0), code[1]); break;
+		case AST_ARG_PRINT: return makeOutput(code[0], code[1]); break;
 		case AST_KW_RETURN: return tacJoin(code[0], tacCreate(TAC_RETURN, code[0]?code[0]->res:0, 0, 0)); break;
 		case AST_CMD_IF: return makeIfThen(code[0], code[1]); break;
 		case AST_CMD_WHILE: return makeWhile(code[0], code[1]); break;
@@ -106,6 +108,7 @@ void tacPrintSingle(TAC* tac){
 		case TAC_VECREAD: fprintf(stderr, "TAC_VECREAD "); break;
 		case TAC_INPUT: fprintf(stderr, "TAC_INPUT "); break;
 		case TAC_OUTPUT: fprintf(stderr, "TAC_OUTPUT "); break;
+		case TAC_OUTPUT_ARG: fprintf(stderr, "TAC_OUTPUT_ARG "); break;
 		case TAC_RETURN: fprintf(stderr, "TAC_RETURN "); break;
 		case TAC_JZ: fprintf(stderr, "TAC_JZ "); break;
 		case TAC_JMP: fprintf(stderr, "TAC_JMP "); break;
@@ -134,8 +137,6 @@ void tacPrintBack(TAC* last){
 TAC* tacInvertList(TAC* last){
 	TAC* aux_tac, *curr_tac;
 
-	if(!last) return last;
-
 	aux_tac = last;
 	for(curr_tac = last->prev; curr_tac; curr_tac = curr_tac->prev){
 		curr_tac->next = aux_tac;
@@ -149,6 +150,18 @@ void tacPrintForward(TAC* first){
 	TAC* tac;
 	for(tac = first; tac != NULL; tac = tac->next)
 			tacPrintSingle(tac);
+
+}
+
+TAC* makeOutput(TAC* code0, TAC* code1){
+
+	if(code0){
+		if (code0->res->type == SYMBOL_LIT_STRING)
+			return tacJoin(code1, tacCreate(TAC_OUTPUT, code0?code0->res:0, 0, 0));
+		else
+			return tacJoin(tacJoin(code0, tacCreate(TAC_OUTPUT_ARG, code0?code0->res:0, 0, 0)), code1);
+	}
+	return NULL;
 
 }
 

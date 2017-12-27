@@ -162,6 +162,8 @@ void asmGenerator(char *filename, TAC* code){
 								  "call %s\n"
 								  "movl %%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
 					break;
+      //ADICIONAR TAC_OUTPUT_ARG
+      //MUDAR PUTS PARA PRINTF EM TAC_OUTPUT    VVVVVVVVVVV
       case TAC_OUTPUT:fprintf(fout,"\n## cmd PRINT\n");
                     fprintf(fout,"movl	$lit_string%d, %%edi\n"
                               	 "\tcall	puts\n", findString(tac->res->text));

@@ -13,11 +13,11 @@ lit_string1:
 .comm __temp14,4,4
 
 lit_string2:
-	.string "\nIniciando WHILE 0 até 5"
+	.string "Variavel a = %d"
 
 
 lit_string3:
-	.string "Variavel a = 2"
+	.string "\nIniciando WHILE 0 até 5"
 
 
 lit_string4:
@@ -103,17 +103,15 @@ main:
 pushq %rbp
 movq	%rsp, %rbp
 
-## EQ
+## cmd ADD
 movl a(%rip), %edx
-movl	$2, %eax
-cmpl %eax, %edx
-jne .__label0
+movl	$1, %eax
+addl %edx, %eax
+movl %eax, __temp0(%rip)
 
 ## cmd PRINT
-movl	$lit_string3, %edi
+movl	$lit_string2, %edi
 	call	puts
-
-.__label0:
 
 ## cmd ADD
 movl a(%rip), %edx
@@ -129,13 +127,13 @@ movl %eax, a(%rip)
 movl a(%rip), %edx
 movl	$12, %eax
 cmpl %eax, %edx
-jne .__label1
+jne .__label0
 
 ## cmd PRINT
 movl	$lit_string6, %edi
 	call	puts
 
-.__label1:
+.__label0:
 
 ## cmd SUB
 movl a(%rip), %edx
@@ -151,13 +149,13 @@ movl %eax, a(%rip)
 movl a(%rip), %edx
 movl	$10, %eax
 cmpl %eax, %edx
-jne .__label2
+jne .__label1
 
 ## cmd PRINT
 movl	$lit_string5, %edi
 	call	puts
 
-.__label2:
+.__label1:
 
 ## cmd MUL
 movl a(%rip), %edx
@@ -173,13 +171,13 @@ movl %eax, a(%rip)
 movl a(%rip), %edx
 movl	$20, %eax
 cmpl %eax, %edx
-jne .__label3
+jne .__label2
 
 ## cmd PRINT
 movl	$lit_string7, %edi
 	call	puts
 
-.__label3:
+.__label2:
 
 ## cmd DIV
 
@@ -197,37 +195,37 @@ movl %eax, a(%rip)
 movl a(%rip), %edx
 movl	$10, %eax
 cmpl %eax, %edx
-jne .__label4
+jne .__label3
 
 ## cmd PRINT
 movl	$lit_string11, %edi
 	call	puts
 
-.__label4:
+.__label3:
 
 ## LE
 movl a(%rip), %edx
 movl	$10, %eax
 cmpl %eax, %edx
-jg .__label5
+jg .__label4
 
 ## cmd PRINT
 movl	$lit_string4, %edi
 	call	puts
 
-.__label5:
+.__label4:
 
 ## GE
 movl a(%rip), %edx
 movl	$10, %eax
 cmpl %eax, %edx
-jl .__label6
+jl .__label5
 
 ## cmd PRINT
 movl	$lit_string9, %edi
 	call	puts
 
-.__label6:
+.__label5:
 
 ## cmd PRINT
 movl	$lit_string10, %edi
@@ -242,28 +240,28 @@ movl %eax, __temp11(%rip)
 movl __temp11(%rip), %edx
 movl a(%rip), %eax
 cmpl %eax, %edx
-jne .__label7
+jne .__label6
 
 ## cmd PRINT
 movl	$lit_string13, %edi
 	call	puts
 
-.__label7:
+.__label6:
 
 ## cmd ASS
 movl	$0, a(%rip)
 
 ## cmd PRINT
-movl	$lit_string2, %edi
+movl	$lit_string3, %edi
 	call	puts
 
-.__label8:
+.__label7:
 
 ## LESS
 movl a(%rip), %edx
 movl	$5, %eax
 cmpl %eax, %edx
-jge .__label9
+jge .__label8
 
 ## cmd PRINT
 movl	$lit_string12, %edi
@@ -278,9 +276,9 @@ movl %eax, __temp14(%rip)
 ## cmd ASS
 movl	__temp14(%rip), %eax
 movl %eax, a(%rip)
-jmp .__label8
+jmp .__label7
 
-.__label9:
+.__label8:
 
 ## cmd PRINT
 movl	$lit_string1, %edi
@@ -301,12 +299,12 @@ movl	%eax, __temp15(%rip)
 movl __temp15(%rip), %edx
 movl	$33, %eax
 cmpl %eax, %edx
-jne .__label10
+jne .__label9
 
 ## cmd PRINT
 movl	$lit_string8, %edi
 	call	puts
 
-.__label10:
+.__label9:
 popq	%rbp
 ret

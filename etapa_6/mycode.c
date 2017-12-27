@@ -7,13 +7,40 @@
   gcc mycode.s -o mycode
   ./mycode
 */
-int a[20];
-int b = 3;
+int a;
+int b;
+int c;
+int d;
+int e;
+int f;
+int g;
+int h;
+int i;
+int j;
+int k;
+int l;
+int m;
+int n;
+int o;
+int p;
+int q;
+int r;
+int s;
+int t;
+int w;
+int u;
+int v;
+int x;
+int y;
+int z;
 
-int func(){
-	return 3;
-}
 
 int main(){
-	b = func();
+	a = 1;
+	b = 2;
+	c = 3;
+	d = 4;
+	e = 5;
+
+	printf("a = %d \nb = %d \nc = %d \nd = %d \ne = %d \n", a, b, c, d, e);
 }

@@ -6,7 +6,7 @@ a: short = 2;
 }
 
 (short) main (){
-	if(a == 2) then{ print "Variavel a = 2";};
+	print "Variavel a = %d", a, a+1;
 	a = a + 10;
 	if(a == 12) then{ print "(soma a + 10) a = 12";};
 	a = a - 2;
@@ -26,7 +26,7 @@ a: short = 2;
 		a = a + 1;
 	};
 	print "FIM WHILE\n";
-	
+
 	print "Assinalndo vetor mat[0] = 33";
 	mat[0] = 33;
 	if(mat[0] == 33) then{ print "SIM mat[0] = 33";};

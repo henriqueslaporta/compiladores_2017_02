@@ -2,8 +2,6 @@ a: short = 0;
 b: short = 0;
 
 (short) main(){
-print "Hello World padrao";
-a=1;
-b=a + 1;
+print "Hello World padrao n: %d", a;
 
 }
