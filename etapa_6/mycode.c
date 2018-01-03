@@ -42,5 +42,6 @@ int main(){
 	d = 4;
 	e = 5;
 
-	printf("a = %d \nb = %d \nc = %d \nd = %d \ne = %d \n", a, b, c, d, e);
+	printf("string normal\n");
+	printf("a = %d \nb = %d \nc = %d \nd = %d \ne = %d \nf = %d \ng = %d \n", a, b, c, d, e, f, g);
 }

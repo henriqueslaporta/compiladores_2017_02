@@ -12,6 +12,28 @@ int findString(char *stringName){
     return NUMBER_OF_STRINGS + 1;
 }
 
+void fprint_print_argument(FILE *fout, TAC *arg_tac, int print_arg_count){
+  switch (print_arg_count) {
+    case 1: if(arg_tac->res->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%esi\n",arg_tac->res->text);
+            else fprintf(fout,"movl	%s(%%rip), %%esi\n", arg_tac->res->text);
+            break;
+    case 2: if(arg_tac->res->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%r8d\n",arg_tac->res->text);
+            else fprintf(fout,"movl	%s(%%rip), %%r8d\n", arg_tac->res->text);
+            break;
+    case 3: if(arg_tac->res->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%r9d\n",arg_tac->res->text);
+            else fprintf(fout,"movl	%s(%%rip), %%r9d\n", arg_tac->res->text);
+            break;
+    case 4: if(arg_tac->res->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%edi\n",arg_tac->res->text);
+            else fprintf(fout,"movl	%s(%%rip), %%edi\n", arg_tac->res->text);
+            break;
+    case 5: if(arg_tac->res->type == SYMBOL_LIT_INT) fprintf(fout,"movl	$%s, %%eax\n",arg_tac->res->text);
+            else fprintf(fout,"movl	%s(%%rip), %%eax\n", arg_tac->res->text);
+            break;
+    default: break;
+  }
+
+}
+
 void asmGenerator(char *filename, TAC* code){
   TAC *tac =code;
   FILE *fout;
@@ -42,6 +64,8 @@ void asmGenerator(char *filename, TAC* code){
      }
   }
 
+  //print arguments TACs
+  int print_arg_count = 0;
   //print TACs
   str_count = 0;
   for (tac=code; tac ; tac=tac->next){
@@ -161,21 +185,26 @@ void asmGenerator(char *filename, TAC* code){
 								  "movl	$0, %%eax\n"
 								  "call %s\n"
 								  "movl %%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
-					break;
-      //ADICIONAR TAC_OUTPUT_ARG
-      //MUDAR PUTS PARA PRINTF EM TAC_OUTPUT    VVVVVVVVVVV
-      case TAC_OUTPUT:fprintf(fout,"\n## cmd PRINT\n");
-                    fprintf(fout,"movl	$lit_string%d, %%edi\n"
-                              	 "\tcall	puts\n", findString(tac->res->text));
+					          break;
+    case TAC_OUTPUT_ARG: fprintf(fout,"\n## PRINT ARG\n");
+                    fprint_print_argument(fout, tac, ++print_arg_count);//count ta aumentando?
                     break;
-      case TAC_BEGINFUN: fprintf(fout,"\n.text\n"
+    case TAC_OUTPUT:fprintf(fout,"\nmovl	%%r8d, %%edx\n");
+                    fprintf(fout,"movl	%%r9d, %%ecx\n");
+                    fprintf(fout,"movl	%%edi, %%r8d\n");
+                    fprintf(fout,"movl	%%eax, %%r9d\n");
+                    fprintf(fout,"## cmd PRINT\n");
+                    fprintf(fout,"movl	$lit_string%d, %%edi\n"
+                              	 "\tcall	printf\n", findString(tac->res->text));
+                    break;
+    case TAC_BEGINFUN: fprintf(fout,"\n.text\n"
       	                              ".globl	%s\n"
       	                              ".type	%s, @function\n"
                                       "%s:\n"
       	                              "\npushq %%rbp\n"
       	                              "movq	%%rsp, %%rbp\n", tac->res->text, tac->res->text, tac->res->text);
                     break;
-      case TAC_ENDFUN:fprintf(fout,  "popq	%%rbp\n"
+    case TAC_ENDFUN:fprintf(fout,  "popq	%%rbp\n"
     	                             "ret\n");
                     break;
 	  case TAC_RETURN:fprintf(fout,"\n## cmd RETURN\n");

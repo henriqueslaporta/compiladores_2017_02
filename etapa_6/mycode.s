@@ -26,10 +26,11 @@
 	.comm	y,4,4
 	.comm	z,4,4
 	.section	.rodata
-	.align 8
 .LC0:
-	.string	"a = %d \nb = %d \nc = %d \nd = %d \ne = %d \n"
-
+	.string	"string normal"
+	.align 8
+.LC1:
+	.string	"a = %d \nb = %d \nc = %d \nd = %d \ne = %d \nf = %d \ng = %d \n"
 	.text
 	.globl	main
 	.type	main, @function
@@ -46,21 +47,24 @@ main:
 	movl	$3, c(%rip)
 	movl	$4, d(%rip)
 	movl	$5, e(%rip)
-
-
-
-	movl	a(%rip), %eax
-	movl	b(%rip), %edx
-	movl	c(%rip), %ecx
-	movl	d(%rip), %r8d
-	movl	e(%rip), %r9d
-
-	movl	%eax, %esi
 	movl	$.LC0, %edi
+	call	puts
+	movl	g(%rip), %edi
+	movl	f(%rip), %esi
+	movl	e(%rip), %r9d
+	movl	d(%rip), %r8d
+	movl	c(%rip), %ecx
+	movl	b(%rip), %edx
+	movl	a(%rip), %eax
+	pushq	%rdi
+	pushq	%rsi
+	movl	%eax, %esi
+	movl	$.LC1, %edi
 	movl	$0, %eax
 	call	printf
+	addq	$16, %rsp
 	movl	$0, %eax
-	popq	%rbp
+	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
