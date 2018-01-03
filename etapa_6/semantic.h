@@ -44,6 +44,7 @@ int getErrorFlag(void);
 void addErrorFlag(void);
 void addFunction(HASH_NODE* function);
 FUNC_DATA_NODE* findFunction(char* function_name);
+int str_in_str_count(char* substr, char* str);
 
 
 #endif

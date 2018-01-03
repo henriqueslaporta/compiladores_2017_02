@@ -87,7 +87,7 @@ program : decl				{
 	semanticCheckReturnType($1);
 
 	code = tacInvertList(tacGenerator($1));
-	tacPrintForward(code);
+	//tacPrintForward(code);
 	asmGenerator("out.s",code);
 }
 

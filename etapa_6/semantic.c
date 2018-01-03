@@ -182,6 +182,29 @@ void semanticCheckUsage(AST* node){
       }
     }
 
+    /*if(node->type == AST_KW_PRINT){
+        AST* current_node;
+        current_node = node->sons[0];
+        int arg_total = 0, arg_count = 0;
+
+        while(current_node != NULL && current_node->type == AST_ARG_PRINT){
+          if(current_node->sons[0] != NULL){
+            if(current_node->sons[0]->symbol->type == SYMBOL_LIT_STRING){
+              //number of int arguments
+              arg_total = arg_total + str_in_str_count("%d", current_node->sons[0]->symbol->text);
+            }
+            else arg_count++;
+
+            current_node = current_node->sons[1];
+          }
+        }
+
+        if(arg_total != arg_count){
+          fprintf(stderr, "Semantic ERROR Line %d: invalid number of print arguments\n", node->line);
+          addErrorFlag();
+        }
+    }/**/
+
     int i;
     for(i=0; i<MAX_SONS; i++){
       semanticCheckUsage(node->sons[i]);
@@ -397,6 +420,24 @@ FUNC_DATA_NODE* findFunction(char* function_name){
 	}
   return current_func;
 }
+
+//counts the number of a substring in a string
+int str_in_str_count(char* substr, char* str){
+
+  int substr_len = strlen(substr);
+  int count = 0;
+
+  char *tmp = str;
+
+  if (substr_len)
+      while ((tmp = strstr(tmp, substr))){
+          tmp += substr_len;
+          count++;
+        }
+
+  return count;
+}
+
 
 
 #endif
