@@ -8,6 +8,7 @@
 
 #define NUMBER_OF_STRINGS 30
 #define STRING_LENGTH 200
+#define MAX_PRINT_ARGS 5
 
 char strings[NUMBER_OF_STRINGS][STRING_LENGTH+1];
 

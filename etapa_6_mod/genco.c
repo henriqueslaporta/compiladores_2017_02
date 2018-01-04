@@ -108,6 +108,7 @@ void tacPrintSingle(TAC* tac){
 		case TAC_VECREAD: fprintf(stderr, "TAC_VECREAD "); break;
 		case TAC_INPUT: fprintf(stderr, "TAC_INPUT "); break;
 		case TAC_OUTPUT: fprintf(stderr, "TAC_OUTPUT "); break;
+		case TAC_OUTPUT_ARG: fprintf(stderr, "TAC_OUTPUT_ARG "); break;
 		case TAC_RETURN: fprintf(stderr, "TAC_RETURN "); break;
 		case TAC_JZ: fprintf(stderr, "TAC_JZ "); break;
 		case TAC_JMP: fprintf(stderr, "TAC_JMP "); break;
@@ -136,8 +137,6 @@ void tacPrintBack(TAC* last){
 TAC* tacInvertList(TAC* last){
 	TAC* aux_tac, *curr_tac;
 
-	if(!last) return last;
-
 	aux_tac = last;
 	for(curr_tac = last->prev; curr_tac; curr_tac = curr_tac->prev){
 		curr_tac->next = aux_tac;
@@ -157,10 +156,13 @@ void tacPrintForward(TAC* first){
 TAC* makeOutput(TAC* code0, TAC* code1){
 
 	if(code0){
-			return tacJoin(tacJoin(code0, tacCreate(TAC_OUTPUT, code0?code0->res:0, 0, 0)), code1);
+		if (code0->res->type == SYMBOL_LIT_STRING)
+			return tacJoin(code1, tacCreate(TAC_OUTPUT, code0?code0->res:0, 0, 0));
+		else
+			return tacJoin(tacJoin(code0, tacCreate(TAC_OUTPUT_ARG, code0?code0->res:0, 0, 0)), code1);
 	}
 	return NULL;
-	
+
 }
 
 TAC* makeIfThen(TAC* code0, TAC* code1){
