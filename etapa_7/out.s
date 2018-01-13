@@ -1,26 +1,32 @@
 .data
 .comm __temp6,4,4
-
-lit_string0:
-	.string ""
-
+.comm __temp9,4,4
 .comm __temp1,4,4
 .comm __temp4,4,4
 .comm __temp7,4,4
 
-lit_string1:
+lit_string0:
 	.string "Parou no meio\n"
 
 .comm __temp2,4,4
 .comm __temp5,4,4
+.comm __temp8,4,4
+
+lit_string1:
+	.string "Digite um numero: \n"
+
 
 lit_string2:
+	.string  "ARG PRINT ERROR" 
+
+
+lit_string3:
 	.string "\n"
 
 .comm __temp0,4,4
 .comm __temp3,4,4
 
-lit_string3:
+lit_string4:
 	.string "Incrementado algumas vezes fica "
 
 
@@ -75,6 +81,27 @@ main:
 pushq %rbp
 movq	%rsp, %rbp
 
+## cmd ASS
+movl	$10, a(%rip)
+
+## cmd SUB
+movl	$10, %edx
+movl	$1, %eax
+subl %eax, %edx
+movl %edx, __temp0(%rip)
+
+## cmd VECREAD
+movl	v+0(%rip), %eax
+movl	%eax, __temp1(%rip)
+
+## cmd VEC ASS
+movl	__temp1(%rip), %eax
+movl	%eax, v+20(%rip)
+
+## cmd PRINT
+movl	$lit_string1, %edi
+	call	printf
+
 .__label0:
 
 ## LESS
@@ -87,32 +114,32 @@ jge .__label1
 movl a(%rip), %edx
 movl	$1, %eax
 addl %edx, %eax
-movl %eax, __temp1(%rip)
+movl %eax, __temp3(%rip)
 
 ## call FUN
 movl	$0, %eax
 call incn
-movl %eax, __temp2(%rip)
+movl %eax, __temp4(%rip)
 
 ## cmd ASS
-movl	__temp2(%rip), %eax
+movl	__temp4(%rip), %eax
 movl %eax, a(%rip)
 
 ## cmd ADD
 movl i(%rip), %edx
 movl	$1, %eax
 addl %edx, %eax
-movl %eax, __temp3(%rip)
+movl %eax, __temp5(%rip)
 
 ## cmd ASS
-movl	__temp3(%rip), %eax
+movl	__temp5(%rip), %eax
 movl %eax, i(%rip)
 jmp .__label0
 
 .__label1:
 
 ## cmd PRINT
-movl	$lit_string3, %edi
+movl	$lit_string4, %edi
 	call	printf
 
 ## cmd PRINT
@@ -121,7 +148,7 @@ movl $integer_string, %edi
 	call printf
 
 ## cmd PRINT
-movl	$lit_string2, %edi
+movl	$lit_string3, %edi
 	call	printf
 
 ## EQ
@@ -131,7 +158,15 @@ cmpl %eax, %edx
 jne .__label2
 
 ## cmd PRINT
-movl	$lit_string1, %edi
+movl	$lit_string0, %edi
+	call	printf
+
+## cmd PRINT
+movl	$lit_string2, %edi
+	call	printf
+
+## cmd PRINT
+movl	$lit_string2, %edi
 	call	printf
 
 .__label2:
@@ -166,10 +201,10 @@ movq	%rsp, %rbp
 movl x(%rip), %edx
 movl n(%rip), %eax
 addl %edx, %eax
-movl %eax, __temp7(%rip)
+movl %eax, __temp9(%rip)
 
 ## cmd RETURN
-movl	__temp7(%rip), %eax
+movl	__temp9(%rip), %eax
 popq	%rbp
 ret
 

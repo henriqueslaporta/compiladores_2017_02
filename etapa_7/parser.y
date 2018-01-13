@@ -74,6 +74,7 @@ int syntaxErrorFlag;
 %type<ast> argprint
 %type<ast> funparaml
 %type<ast> funparamrest
+%type<ast> endCmd
 
 %left OPERATOR_AND OPERATOR_OR '!'
 %left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE
@@ -146,10 +147,14 @@ funarg: SYMBOL_IDENTIFIER ':' tipevardec	{ $$ = astCreate(AST_SYMBOL,$1,$3,0,0,0
 block : '{' lcmd '}'			{ $$ = astCreate(AST_BLOCK,0,$2,0,0,0);  }
 	;
 
-lcmd: cmd ';' lcmd				{ $$ = astCreate(AST_CMD_LIST,0,$1,$3,0,0); }
+lcmd: cmd endCmd lcmd				{ $$ = astCreate(AST_CMD_LIST,0,$1,$3,0,0); }
 	| cmd						{ $$ = $1; }
 	;
 
+endCmd: ';'				{ $$ = 0; }
+	| error 			{ $$ = 0; }
+	;
+	
 cmd : SYMBOL_IDENTIFIER '=' exp				{ $$ = astCreate(AST_ATRIB,$1,$3,0,0,0); }
 	| SYMBOL_IDENTIFIER'['exp']' '=' exp	{ $$ = astCreate(AST_VEC_ATRIB,$1,$3,$6,0,0); }
 	| KW_READ '>' SYMBOL_IDENTIFIER			{ $$ = astCreate(AST_KW_READ,$3,0,0,0,0); }
@@ -159,7 +164,7 @@ cmd : SYMBOL_IDENTIFIER '=' exp				{ $$ = astCreate(AST_ATRIB,$1,$3,0,0,0); }
 	| cmdwhile								{ $$ = $1; }
 	| block									{ $$ = $1; }
 	|										{ $$ = 0; }
-	| error 						{ $$ = 0; }
+	//| error 						{ $$ = 0; }
 	;
 
 eprint: argprint restprint					{ $$ = astCreate(AST_ARG_PRINT,0,$1,$2,0,0); }
@@ -168,12 +173,12 @@ eprint: argprint restprint					{ $$ = astCreate(AST_ARG_PRINT,0,$1,$2,0,0); }
 
 restprint: ',' argprint restprint			{ $$ = astCreate(AST_ARG_PRINT,0,$2,$3,0,0); }
 	|										{ $$ = 0; }
-	//| error { $$ = astCreate(AST_SYMBOL,hashInsert(" \"ARG PRINT ERROR\" ", SYMBOL_LIT_STRING),0,0,0,0);}
+	| error { $$ = astCreate(AST_SYMBOL,hashInsert(" \"ARG PRINT ERROR\" ", SYMBOL_LIT_STRING),0,0,0,0);}
 	;
 
 argprint: exp								{ $$ = $1; }
 	| SYMBOL_LIT_STRING						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
-	//| error { $$ = astCreate(AST_SYMBOL,hashInsert(" \"ARG PRINT ERROR\" ", SYMBOL_LIT_STRING),0,0,0,0); }
+	| error { $$ = astCreate(AST_SYMBOL,hashInsert(" \"ARG PRINT ERROR\" ", SYMBOL_LIT_STRING),0,0,0,0); }
 	;
 
 exp :  exp '+' exp							{ $$ = astCreate(AST_ADD,0,$1,$3,0,0); }
