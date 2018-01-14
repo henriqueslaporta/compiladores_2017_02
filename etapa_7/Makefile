@@ -33,3 +33,6 @@ lex.yy.c: scanner.l
 
 clean:
 	rm etapa7 lex.yy.c *.o y.tab.c y.tab.h y.output
+
+error_recovery_example: clean
+	./run_err_rec_example.sh

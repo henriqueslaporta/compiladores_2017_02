@@ -13,7 +13,6 @@ void initSyntaxErrorFlag(void);
 int getSyntaxErrorFlag(void);
 void addSyntaxErrorFlag(void);
 int yyerror(char *msg);
-AST* recoverPrintError();
 
 int syntaxErrorFlag;
 %}
@@ -83,7 +82,6 @@ int syntaxErrorFlag;
 
 %%
 program : decl				{
-	TAC* code;
 
 	//astPrint($1,0);
 	astPrintToFile($1, outputfile);
@@ -93,9 +91,12 @@ program : decl				{
   semanticCheckOperands($1);
 	semanticCheckReturnType($1);
 
-	code = tacInvertList(tacGenerator($1));
-	//tacPrintForward(code);
-	asmGenerator("out.s",code);
+	if(syntaxErrorFlag == 0 && errorFlag == 0){
+		TAC* code;
+		code = tacInvertList(tacGenerator($1));
+		//tacPrintForward(code);
+		asmGenerator("out.s",code);
+	}
 }
 
 decl : dec decl				{ $$ = astCreate(AST_DECLARATION,0,$1,$2,0,0); }
@@ -109,12 +110,15 @@ dec : fundec				{ $$ = $1; }
 
 vardec : SYMBOL_IDENTIFIER ':' tipevardec '=' literal ';'					{ $$ = astCreate(AST_VAR_DEC,$1,$3,$5,0,0); }
 	| SYMBOL_IDENTIFIER ':' tipevardec'['literal']' vectorinit ';'	{ $$ = astCreate(AST_VECTOR_DEC,$1,$3,$5,$7,0); }
+	| SYMBOL_IDENTIFIER ':' tipevardec '=' error { $$ = astCreate(AST_VAR_DEC,$1,$3,astCreate(AST_SYMBOL,hashInsert("0",SYMBOL_LIT_INT),0,0,0,0),0,0);}
 	;
+
 
 vectorinit: SYMBOL_LIT_INT vectorinit					{ $$ = astCreate(AST_SYMBOL,$1,$2,0,0,0); }
 	| SYMBOL_LIT_REAL vectorinit						{ $$ = astCreate(AST_SYMBOL,$1,$2,0,0,0); }
 	| SYMBOL_LIT_CHAR vectorinit						{ $$ = astCreate(AST_SYMBOL,$1,$2,0,0,0); }
 	|													{ $$ = 0; }
+	| error 									{ $$ = 0; }
 	;
 
 tipevardec: KW_BYTE						{ $$ = astCreate(AST_KW_BYTE,0,0,0,0,0); }
@@ -154,7 +158,7 @@ lcmd: cmd endCmd lcmd				{ $$ = astCreate(AST_CMD_LIST,0,$1,$3,0,0); }
 endCmd: ';'				{ $$ = 0; }
 	| error 			{ $$ = 0; }
 	;
-	
+
 cmd : SYMBOL_IDENTIFIER '=' exp				{ $$ = astCreate(AST_ATRIB,$1,$3,0,0,0); }
 	| SYMBOL_IDENTIFIER'['exp']' '=' exp	{ $$ = astCreate(AST_VEC_ATRIB,$1,$3,$6,0,0); }
 	| KW_READ '>' SYMBOL_IDENTIFIER			{ $$ = astCreate(AST_KW_READ,$3,0,0,0,0); }
@@ -164,21 +168,21 @@ cmd : SYMBOL_IDENTIFIER '=' exp				{ $$ = astCreate(AST_ATRIB,$1,$3,0,0,0); }
 	| cmdwhile								{ $$ = $1; }
 	| block									{ $$ = $1; }
 	|										{ $$ = 0; }
-	//| error 						{ $$ = 0; }
+	| error 						{ $$ = 0; }
 	;
 
+
 eprint: argprint restprint					{ $$ = astCreate(AST_ARG_PRINT,0,$1,$2,0,0); }
-	//| error { $$ = 0; fprintf(stderr,"zdfgfgasg\n");}
 	;
 
 restprint: ',' argprint restprint			{ $$ = astCreate(AST_ARG_PRINT,0,$2,$3,0,0); }
 	|										{ $$ = 0; }
-	| error { $$ = astCreate(AST_SYMBOL,hashInsert(" \"ARG PRINT ERROR\" ", SYMBOL_LIT_STRING),0,0,0,0);}
+	| error { $$ = astCreate(AST_ARG_PRINT,0,astCreate(AST_SYMBOL,hashInsert(" \"ERROR\" ", SYMBOL_LIT_STRING),0,0,0,0),0,0,0);}
 	;
 
 argprint: exp								{ $$ = $1; }
 	| SYMBOL_LIT_STRING						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
-	| error { $$ = astCreate(AST_SYMBOL,hashInsert(" \"ARG PRINT ERROR\" ", SYMBOL_LIT_STRING),0,0,0,0); }
+	| error { $$ = astCreate(AST_SYMBOL,hashInsert(" \"ERROR\" ", SYMBOL_LIT_STRING),0,0,0,0); }
 	;
 
 exp :  exp '+' exp							{ $$ = astCreate(AST_ADD,0,$1,$3,0,0); }
@@ -201,7 +205,10 @@ exp :  exp '+' exp							{ $$ = astCreate(AST_ADD,0,$1,$3,0,0); }
 	| SYMBOL_LIT_CHAR						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
 	| SYMBOL_IDENTIFIER						{ $$ = astCreate(AST_SYMBOL,$1,0,0,0,0); }
 	| '('exp')'								{ $$ = astCreate(AST_EXP_P,0,$2,0,0,0); }
-//	|  error  							{ $$ = 0;  fprintf(stderr,"TTTTTdfgfgasg\n");}
+	| exp '+' error						{ $$ = astCreate(AST_ADD,0,$1, astCreate(AST_SYMBOL,hashInsert("0",SYMBOL_LIT_INT),0,0,0,0),0,0);}
+	| exp '-' error						{ $$ = astCreate(AST_SUB,0,$1, astCreate(AST_SYMBOL,hashInsert("0",SYMBOL_LIT_INT),0,0,0,0),0,0);}
+	| exp '*' error						{ $$ = astCreate(AST_MUL,0,$1, astCreate(AST_SYMBOL,hashInsert("1",SYMBOL_LIT_INT),0,0,0,0),0,0);}
+	| exp '/' error						{ $$ = astCreate(AST_DIV,0,$1, astCreate(AST_SYMBOL,hashInsert("1",SYMBOL_LIT_INT),0,0,0,0),0,0);}
 	;
 
 funparaml: exp funparamrest					{ $$ = astCreate(AST_FUNPARAML,0,$1,$2,0,0); }
@@ -239,13 +246,4 @@ int getSyntaxErrorFlag(void){
 
 void addSyntaxErrorFlag(void){
 	syntaxErrorFlag++;
-}
-
-AST* recoverPrintError(){
-	AST* ast;
-	ast = astCreate(AST_SYMBOL,hashInsert(" \"ARG PRINT ERROR\" ", SYMBOL_LIT_STRING),0,0,0,0);
-	ast = astCreate(AST_ARG_PRINT,0,ast,0,0,0);
-	ast = astCreate(AST_KW_PRINT,0,ast,0,0,0);
-
-	return ast;
 }

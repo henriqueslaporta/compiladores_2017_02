@@ -40,14 +40,20 @@ int main (int argc, char **argv)
 	//printf("\nNumero de linhas do arquivo: %d\n", getLineNumber()-1);
 	//hashPrint();
 
-	if(errorFlag > 0){
+	if(syntaxErrorFlag > 0 && errorFlag > 0){
+		fprintf(stderr,"Programa possui %d erro(s) sintatico(s). \n", getSyntaxErrorFlag());
 		fprintf(stderr,"Programa possui %d erro(s) semantico(s). \n", getErrorFlag());
- 		exit(4);
+		exit(4);
 	}
 
 	if(syntaxErrorFlag > 0){
 		fprintf(stderr,"Programa possui %d erro(s) sintatico(s). \n", getSyntaxErrorFlag());
  		exit(3);
+	}
+
+	if(errorFlag > 0){
+		fprintf(stderr,"Programa possui %d erro(s) semantico(s). \n", getErrorFlag());
+		exit(4);
 	}
 
 	fprintf(stderr,"Programa pertence a linguagem. \n");

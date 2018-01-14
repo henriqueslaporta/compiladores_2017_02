@@ -1,0 +1,26 @@
+int1: short = 0+;  //<---------VALOR INVALIDO PARA INICIALIZACAO
+int2: long = 0;
+vec1: long[10] 0+ 0 0; 0 0 0 0 0 0 0;  //<---------VALORES INVALIDOS PARA INICIALIZACAO
+vec2: long[10];
+float1: float = 10.55;
+char1: byte = 'x';
+
+(long) main()
+  {
+  int1 = 10;               
+  vec1[2] = vec1[10-1];
+
+  print "string" variavel;  //<---------FALTA UMA VIRGULA E variavel NAO FOI DECLARADA
+
+  while (int2<10)
+    {
+    int1 = incn(int1+1,1);
+	   int2 = int2 ++ 1      //<---------OPERADOR EXTRA E ';' ESQUECIDO
+     int2 = int1 ** 3      //<---------OPERADOR EXTRA
+    };
+
+  print ,,"Incrementado algumas vezes fica ",int1,"\n",,; //<---------VIRGULAS DEMAIS
+  }
+
+(short) incn (x: long, n: long)
+  {return (x+n)}

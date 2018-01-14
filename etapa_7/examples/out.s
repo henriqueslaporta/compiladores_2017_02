@@ -1,24 +1,24 @@
 .data
 .comm __temp6,4,4
 .comm __temp9,4,4
+
+lit_string0:
+	.string  "ERROR" 
+
 .comm __temp1,4,4
 .comm __temp4,4,4
 .comm __temp7,4,4
 
-lit_string0:
+lit_string1:
+	.string "string"
+
+
+lit_string2:
 	.string "Parou no meio\n"
 
 .comm __temp2,4,4
 .comm __temp5,4,4
 .comm __temp8,4,4
-
-lit_string1:
-	.string "Digite um numero: \n"
-
-
-lit_string2:
-	.string  "ARG PRINT ERROR" 
-
 
 lit_string3:
 	.string "\n"
@@ -102,6 +102,10 @@ movl	%eax, v+20(%rip)
 movl	$lit_string1, %edi
 	call	printf
 
+## cmd PRINT
+movl	$lit_string0, %edi
+	call	printf
+
 .__label0:
 
 ## LESS
@@ -158,15 +162,19 @@ cmpl %eax, %edx
 jne .__label2
 
 ## cmd PRINT
+movl	$lit_string2, %edi
+	call	printf
+
+## cmd PRINT
 movl	$lit_string0, %edi
 	call	printf
 
 ## cmd PRINT
-movl	$lit_string2, %edi
+movl	$lit_string0, %edi
 	call	printf
 
 ## cmd PRINT
-movl	$lit_string2, %edi
+movl	$lit_string0, %edi
 	call	printf
 
 .__label2:
